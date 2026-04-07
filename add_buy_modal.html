@@ -1,0 +1,174 @@
+<!-- 模擬買入對話框 -->
+<div id="buyModal" class="modal">
+    <div class="modal-content">
+        <h3>📈 模擬買入</h3>
+        <div class="form-group">
+            <label>股票代號</label>
+            <input type="text" id="buySymbol" readonly>
+        </div>
+        <div class="form-group">
+            <label>股票名稱</label>
+            <input type="text" id="buyName" readonly>
+        </div>
+        <div class="form-group">
+            <label>買入價格</label>
+            <input type="number" id="buyPrice" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>買入股數（張）</label>
+            <input type="number" id="buyShares" value="1" min="1">
+            <small style="color:#888;display:block;margin-top:5px;">1張 = 1000股</small>
+        </div>
+        <div class="form-group">
+            <label>買入理由</label>
+            <input type="text" id="buyReason" placeholder="例如：技術面突破、MACD黃金交叉">
+        </div>
+        <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin:15px 0;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <span style="color:#666;">買入金額：</span>
+                <strong style="color:#667eea;font-size:1.2em;" id="buyCost">$0</strong>
+            </div>
+            <div style="color:#888;font-size:0.9em;">
+                * 模擬交易，無手續費與稅金
+            </div>
+        </div>
+        <div class="modal-buttons">
+            <button onclick="closeBuyModal()" class="btn" style="background:#6c757d;">取消</button>
+            <button onclick="confirmBuy()" class="btn" style="background:#27ae60;">確認買入</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 開啟買入對話框
+function openBuyModal(symbol, name, price, reason) {
+    document.getElementById('buySymbol').value = symbol;
+    document.getElementById('buyName').value = name;
+    document.getElementById('buyPrice').value = price.toFixed(2);
+    document.getElementById('buyReason').value = reason || '';
+    document.getElementById('buyShares').value = 1;
+    updateBuyCost();
+    document.getElementById('buyModal').style.display = 'flex';
+}
+
+// 關閉買入對話框
+function closeBuyModal() {
+    document.getElementById('buyModal').style.display = 'none';
+}
+
+// 更新買入成本
+function updateBuyCost() {
+    const price = parseFloat(document.getElementById('buyPrice').value) || 0;
+    const shares = parseInt(document.getElementById('buyShares').value) || 0;
+    const cost = price * shares * 1000; // 1張 = 1000股
+    document.getElementById('buyCost').textContent = `$${cost.toLocaleString()}`;
+}
+
+// 確認買入
+async function confirmBuy() {
+    const symbol = document.getElementById('buySymbol').value;
+    const name = document.getElementById('buyName').value;
+    const price = parseFloat(document.getElementById('buyPrice').value);
+    const shares = parseInt(document.getElementById('buyShares').value);
+    const reason = document.getElementById('buyReason').value || '技術面買點';
+    
+    if (!symbol || !price || !shares) {
+        alert('❌ 請填寫完整資料');
+        return;
+    }
+    
+    const totalCost = price * shares * 1000;
+    
+    if (!confirm(`確認買入 ${name} (${symbol})\n` +
+                 `數量: ${shares}張 (${shares * 1000}股)\n` +
+                 `價格: $${price}\n` +
+                 `總金額: $${totalCost.toLocaleString()}\n` +
+                 `理由: ${reason}`)) {
+        return;
+    }
+    
+    try {
+        // 讀取現有投資組合
+        const response = await fetch('portfolio.json');
+        const portfolio = await response.json();
+        
+        // 檢查是否已持有
+        const existingIndex = portfolio.holdings.findIndex(h => h.symbol === symbol);
+        
+        if (existingIndex >= 0) {
+            // 已持有，加碼
+            const existing = portfolio.holdings[existingIndex];
+            const totalShares = existing.shares + (shares * 1000);
+            const totalCostValue = (existing.buy_price * existing.shares) + (price * shares * 1000);
+            const avgPrice = totalCostValue / totalShares;
+            
+            portfolio.holdings[existingIndex] = {
+                symbol: symbol,
+                name: name,
+                shares: totalShares,
+                buy_price: avgPrice,
+                current_price: price,
+                profit_loss: 0,
+                return_pct: 0,
+                reason: reason
+            };
+            
+            alert(`✅ 加碼成功！\n\n` +
+                  `${name} (${symbol})\n` +
+                  `持股: ${existing.shares / 1000}張 → ${totalShares / 1000}張\n` +
+                  `平均成本: $${existing.buy_price.toFixed(2)} → $${avgPrice.toFixed(2)}`);
+        } else {
+            // 新買入
+            portfolio.holdings.push({
+                symbol: symbol,
+                name: name,
+                shares: shares * 1000,
+                buy_price: price,
+                current_price: price,
+                profit_loss: 0,
+                return_pct: 0,
+                reason: reason
+            });
+            
+            alert(`✅ 買入成功！\n\n` +
+                  `${name} (${symbol})\n` +
+                  `數量: ${shares}張\n` +
+                  `價格: $${price}\n` +
+                  `總金額: $${totalCost.toLocaleString()}`);
+        }
+        
+        // 更新總計
+        portfolio.total_cost = portfolio.holdings.reduce((sum, h) => sum + (h.buy_price * h.shares), 0);
+        portfolio.current_value = portfolio.holdings.reduce((sum, h) => sum + (h.current_price * h.shares), 0);
+        portfolio.total_pnl = portfolio.current_value - portfolio.total_cost;
+        portfolio.total_return = ((portfolio.total_pnl / portfolio.total_cost) * 100);
+        portfolio.last_update = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        
+        // 儲存（這裡需要後端支援，暫時只顯示提示）
+        console.log('Updated portfolio:', portfolio);
+        
+        alert('⚠️ 注意：投資組合已更新，但需要後端支援才能永久儲存。\n\n' +
+              '請執行以下命令儲存：\n' +
+              'echo \'' + JSON.stringify(portfolio, null, 2) + '\' > stock_web/portfolio.json');
+        
+        closeBuyModal();
+        
+        // 重新載入投資組合頁面
+        if (typeof loadPortfolio === 'function') {
+            loadPortfolio();
+        }
+        
+    } catch (error) {
+        alert('❌ 買入失敗: ' + error.message);
+    }
+}
+
+// 監聽買入數量變化
+document.addEventListener('DOMContentLoaded', function() {
+    const priceInput = document.getElementById('buyPrice');
+    const sharesInput = document.getElementById('buyShares');
+    
+    if (priceInput) priceInput.addEventListener('input', updateBuyCost);
+    if (sharesInput) sharesInput.addEventListener('input', updateBuyCost);
+});
+</script>

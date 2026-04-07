@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>🧪 資料載入測試</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        pre {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 鯊魚寶寶系統測試</h1>
+    
+    <div class="test-box">
+        <h2>1. API 連線測試</h2>
+        <p id="api-test">測試中...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>2. daily_report.json 載入測試</h2>
+        <p id="json-test">測試中...</p>
+        <pre id="json-data"></pre>
+    </div>
+    
+    <div class="test-box">
+        <h2>3. V3.0 TOP 5 資料</h2>
+        <p id="top5-test">測試中...</p>
+        <pre id="top5-data"></pre>
+    </div>
+    
+    <div class="test-box">
+        <h2>4. 市場概況</h2>
+        <p id="summary-test">測試中...</p>
+        <pre id="summary-data"></pre>
+    </div>
+    
+    <script>
+        // 測試 API
+        async function testAPI() {
+            try {
+                const response = await fetch('http://localhost:8888/api');
+                const data = await response.json();
+                document.getElementById('api-test').innerHTML = 
+                    '<span class="success">✅ API 連線成功</span>';
+                console.log('API:', data);
+            } catch (error) {
+                document.getElementById('api-test').innerHTML = 
+                    '<span class="error">❌ API 連線失敗: ' + error.message + '</span>';
+            }
+        }
+        
+        // 測試 daily_report.json
+        async function testDailyReport() {
+            try {
+                const response = await fetch('daily_report.json');
+                const data = await response.json();
+                document.getElementById('json-test').innerHTML = 
+                    '<span class="success">✅ daily_report.json 載入成功</span>';
+                document.getElementById('json-data').textContent = 
+                    JSON.stringify(data, null, 2).substring(0, 500) + '...';
+                
+                // 測試 V3.0 TOP 5
+                testTop5(data);
+                
+                // 測試市場概況
+                testSummary(data);
+            } catch (error) {
+                document.getElementById('json-test').innerHTML = 
+                    '<span class="error">❌ 載入失敗: ' + error.message + '</span>';
+            }
+        }
+        
+        // 測試 TOP 5
+        function testTop5(data) {
+            let allPicks = [];
+            if (data.picks_20_30) allPicks = allPicks.concat(data.picks_20_30);
+            if (data.picks_30_40) allPicks = allPicks.concat(data.picks_30_40);
+            if (data.picks_40_50) allPicks = allPicks.concat(data.picks_40_50);
+            
+            allPicks.sort((a, b) => b.score - a.score);
+            const top5 = allPicks.slice(0, 5);
+            
+            if (top5.length > 0) {
+                document.getElementById('top5-test').innerHTML = 
+                    '<span class="success">✅ 找到 ' + top5.length + ' 支 TOP 股票</span>';
+                document.getElementById('top5-data').textContent = 
+                    JSON.stringify(top5, null, 2);
+            } else {
+                document.getElementById('top5-test').innerHTML = 
+                    '<span class="error">❌ 沒有找到 TOP 股票</span>';
+            }
+        }
+        
+        // 測試市場概況
+        function testSummary(data) {
+            if (data.summary) {
+                document.getElementById('summary-test').innerHTML = 
+                    '<span class="success">✅ 市場概況資料正常</span>';
+                document.getElementById('summary-data').textContent = 
+                    JSON.stringify(data.summary, null, 2);
+            } else {
+                document.getElementById('summary-test').innerHTML = 
+                    '<span class="error">❌ 沒有市場概況資料</span>';
+            }
+        }
+        
+        // 執行所有測試
+        window.onload = function() {
+            testAPI();
+            testDailyReport();
+        };
+    </script>
+</body>
+</html>

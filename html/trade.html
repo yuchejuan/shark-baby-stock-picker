@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦈 交易管理系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-buy {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-buy:hover {
+            background: #229954;
+        }
+        
+        .btn-sell {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-sell:hover {
+            background: #c0392b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .trade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .trade-table th,
+        .trade-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .trade-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .trade-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .badge-buy {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .badge-sell {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .profit {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .loss {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦈 鯊魚寶寶交易管理系統</h1>
+            <div>Rick 的投資紀錄 | 永久保存 | 損益追蹤</div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('overview')">📊 總覽</button>
+            <button class="tab-button" onclick="switchTab('trade-form')">💰 買賣操作</button>
+            <button class="tab-button" onclick="switchTab('holdings')">📁 當前持股</button>
+            <button class="tab-button" onclick="switchTab('history')">📜 交易歷史</button>
+            <button class="tab-button" onclick="location.href='index.html'">🏠 返回首頁</button>
+        </div>
+        
+        <!-- 總覽分頁 -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">已實現損益</div>
+                    <div class="value" id="realized-pnl">載入中...</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">未實現損益</div>
+                    <div class="value" id="unrealized-pnl">載入中...</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">總損益</div>
+                    <div class="value" id="total-pnl">載入中...</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">勝率</div>
+                    <div class="value" id="win-rate">載入中...</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📈 最近 10 筆交易</h2>
+                <table class="trade-table" id="recent-trades">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>類型</th>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>股數</th>
+                            <th>價格</th>
+                            <th>金額</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-trades-body">
+                        <tr><td colspan="8" style="text-align:center;">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 買賣操作分頁 -->
+        <div id="trade-form" class="tab-content">
+            <div class="card">
+                <h2>💰 新增買賣交易</h2>
+                <form id="trade-form-element" onsubmit="submitTrade(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="trade-type">交易類型 *</label>
+                            <select id="trade-type" required>
+                                <option value="buy">買入</option>
+                                <option value="sell">賣出</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="symbol">股票代號 *</label>
+                            <input type="text" id="symbol" placeholder="例如: 2330" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="name">股票名稱 *</label>
+                            <input type="text" id="name" placeholder="例如: 台積電" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="shares">股數 *</label>
+                            <input type="number" id="shares" placeholder="1000" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="price">價格 *</label>
+                            <input type="number" id="price" placeholder="500.00" step="0.01" min="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date">交易日期 *</label>
+                            <input type="date" id="date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="note">備註</label>
+                        <textarea id="note" rows="3" placeholder="選填: 交易理由、市場狀況等..."></textarea>
+                    </div>
+                    
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                        <button type="submit" class="btn btn-buy" id="submit-btn">💰 確認交易</button>
+                        <button type="button" class="btn" style="background:#95a5a6;color:white;" onclick="document.getElementById('trade-form-element').reset()">🔄 清除</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 當前持股分頁 -->
+        <div id="holdings" class="tab-content">
+            <div class="card">
+                <h2>📁 當前持股明細</h2>
+                <table class="trade-table" id="holdings-table">
+                    <thead>
+                        <tr>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>總股數</th>
+                            <th>平均成本</th>
+                            <th>總成本</th>
+                            <th>現價</th>
+                            <th>市值</th>
+                            <th>損益</th>
+                            <th>報酬率</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdings-body">
+                        <tr><td colspan="9" style="text-align:center;">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 交易歷史分頁 -->
+        <div id="history" class="tab-content">
+            <div class="card">
+                <h2>📜 所有交易紀錄</h2>
+                <div style="margin-bottom:15px;">
+                    <label for="filter-symbol">篩選股票: </label>
+                    <input type="text" id="filter-symbol" placeholder="輸入代號或留空顯示全部" style="padding:8px;border:2px solid #ddd;border-radius:5px;">
+                    <button onclick="loadTrades()" class="btn" style="background:#667eea;color:white;padding:8px 20px;">🔍 搜尋</button>
+                </div>
+                <table class="trade-table" id="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>日期</th>
+                            <th>類型</th>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>股數</th>
+                            <th>價格</th>
+                            <th>金額</th>
+                            <th>備註</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <tr><td colspan="10" style="text-align:center;">載入中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8888/api';
+        
+        // 分頁切換
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // 載入對應資料
+            if (tabName === 'overview') {
+                loadStats();
+                loadRecentTrades();
+            } else if (tabName === 'holdings') {
+                loadHoldings();
+            } else if (tabName === 'history') {
+                loadTrades();
+            }
+        }
+        
+        // 提交交易
+        async function submitTrade(event) {
+            event.preventDefault();
+            
+            const trade = {
+                type: document.getElementById('trade-type').value,
+                symbol: document.getElementById('symbol').value,
+                name: document.getElementById('name').value,
+                shares: parseInt(document.getElementById('shares').value),
+                price: parseFloat(document.getElementById('price').value),
+                date: document.getElementById('date').value + 'T00:00:00Z',
+                note: document.getElementById('note').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/trade/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(trade)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ 交易記錄新增成功！');
+                    document.getElementById('trade-form-element').reset();
+                    // 設定預設日期為今天
+                    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+                } else {
+                    alert('❌ 新增失敗: ' + result.message);
+                }
+            } catch (error) {
+                alert('❌ 連線錯誤: ' + error.message);
+            }
+        }
+        
+        // 載入統計資料
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const stats = await response.json();
+                
+                document.getElementById('realized-pnl').textContent = formatNumber(stats.total_realized);
+                document.getElementById('unrealized-pnl').textContent = formatNumber(stats.total_unrealized);
+                document.getElementById('total-pnl').textContent = formatNumber(stats.total_profit);
+                document.getElementById('win-rate').textContent = (stats.win_rate || 0).toFixed(1) + '%';
+            } catch (error) {
+                console.error('載入統計失敗:', error);
+            }
+        }
+        
+        // 載入最近交易
+        async function loadRecentTrades() {
+            try {
+                const response = await fetch(`${API_BASE}/trades?limit=10`);
+                const trades = await response.json();
+                
+                const tbody = document.getElementById('recent-trades-body');
+                tbody.innerHTML = trades.map(t => `
+                    <tr>
+                        <td>${formatDate(t.date)}</td>
+                        <td><span class="badge badge-${t.type}">${t.type === 'buy' ? '買入' : '賣出'}</span></td>
+                        <td>${t.symbol}</td>
+                        <td>${t.name}</td>
+                        <td>${t.shares}</td>
+                        <td>$${t.price.toFixed(2)}</td>
+                        <td class="${t.type === 'buy' ? 'loss' : 'profit'}">$${formatNumber(t.amount)}</td>
+                        <td>${t.note || '-'}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('載入交易失敗:', error);
+            }
+        }
+        
+        // 載入持股
+        async function loadHoldings() {
+            try {
+                const response = await fetch(`${API_BASE}/holdings`);
+                const holdings = await response.json();
+                
+                const tbody = document.getElementById('holdings-body');
+                tbody.innerHTML = holdings.map(h => `
+                    <tr>
+                        <td>${h.symbol}</td>
+                        <td>${h.name}</td>
+                        <td>${h.total_shares}</td>
+                        <td>$${h.avg_buy_price.toFixed(2)}</td>
+                        <td>$${formatNumber(h.total_cost)}</td>
+                        <td>$${(h.current_price || 0).toFixed(2)}</td>
+                        <td>$${formatNumber(h.current_value || 0)}</td>
+                        <td class="${h.profit_loss >= 0 ? 'profit' : 'loss'}">$${formatNumber(h.profit_loss || 0)}</td>
+                        <td class="${h.return_pct >= 0 ? 'profit' : 'loss'}">${(h.return_pct || 0).toFixed(2)}%</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('載入持股失敗:', error);
+            }
+        }
+        
+        // 載入所有交易
+        async function loadTrades() {
+            const symbol = document.getElementById('filter-symbol').value;
+            const url = symbol ? `${API_BASE}/trades?symbol=${symbol}` : `${API_BASE}/trades`;
+            
+            try {
+                const response = await fetch(url);
+                const trades = await response.json();
+                
+                const tbody = document.getElementById('history-body');
+                tbody.innerHTML = trades.map(t => `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${formatDate(t.date)}</td>
+                        <td><span class="badge badge-${t.type}">${t.type === 'buy' ? '買入' : '賣出'}</span></td>
+                        <td>${t.symbol}</td>
+                        <td>${t.name}</td>
+                        <td>${t.shares}</td>
+                        <td>$${t.price.toFixed(2)}</td>
+                        <td class="${t.type === 'buy' ? 'loss' : 'profit'}">$${formatNumber(t.amount)}</td>
+                        <td>${t.note || '-'}</td>
+                        <td><button class="btn-delete" onclick="deleteTrade(${t.id})">刪除</button></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('載入交易失敗:', error);
+            }
+        }
+        
+        // 刪除交易
+        async function deleteTrade(id) {
+            if (!confirm('確定要刪除這筆交易嗎？')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/trade/delete?id=${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ 交易已刪除');
+                    loadTrades();
+                }
+            } catch (error) {
+                alert('❌ 刪除失敗: ' + error.message);
+            }
+        }
+        
+        // 格式化函數
+        function formatNumber(num) {
+            return num.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('zh-TW');
+        }
+        
+        // 頁面載入時初始化
+        window.onload = function() {
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            loadStats();
+            loadRecentTrades();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦈 高股息投資追蹤系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .summary-item .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item .value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .negative {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .badge-safe {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦈 高股息投資追蹤系統</h1>
+            <p>定期定額 × 被動收入規劃工具</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('dashboard')">📊 總覽儀表板</button>
+            <button class="tab-button" onclick="switchTab('ranking')">🏆 殖利率排行</button>
+            <button class="tab-button" onclick="switchTab('holdings')">💼 我的持股</button>
+            <button class="tab-button" onclick="switchTab('add')">➕ 新增持股</button>
+        </div>
+        
+        <!-- Tab 1: 總覽儀表板 -->
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h2>📊 投資總覽</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="label">總投入金額</div>
+                        <div class="value" id="total-investment">$0</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">年被動收入</div>
+                        <div class="value" id="total-dividend">$0</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">平均殖利率</div>
+                        <div class="value" id="avg-yield">0%</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="label">持股檔數</div>
+                        <div class="value" id="total-holdings">0</div>
+                    </div>
+                </div>
+                
+                <div id="dashboard-alerts"></div>
+                
+                <h3 style="margin-top:30px;color:#667eea;">💡 快速建議</h3>
+                <div id="quick-tips"></div>
+            </div>
+        </div>
+        
+        <!-- Tab 2: 殖利率排行 -->
+        <div id="ranking" class="tab-content">
+            <div class="card">
+                <h2>🏆 台股高股息殖利率排行</h2>
+                <p style="color:#666;margin-bottom:10px;">以下為常見高股息標的參考</p>
+                <div id="price-status" style="padding:10px;margin-bottom:20px;background:#fff3cd;border-radius:8px;text-align:center;">
+                    <strong>⏳ 正在抓取即時股價...</strong><br>
+                    <small>首次載入需要約 30 秒，請稍候</small>
+                </div>
+                <div style="text-align:right;margin-bottom:10px;">
+                    <button class="btn btn-primary" onclick="forceRefreshPrices()" style="padding:8px 16px;">
+                        🔄 強制更新股價
+                    </button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>類型</th>
+                            <th>公司類型</th>
+                            <th>殖利率</th>
+                            <th id="price-header">目前股價（真實）</th>
+                            <th>EPS</th>
+                            <th>配息率</th>
+                            <th>每股年配息</th>
+                            <th>10年連續配息</th>
+                            <th>配息頻率</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-body">
+                        <!-- 由 JavaScript 動態生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Tab 3: 我的持股 -->
+        <div id="holdings" class="tab-content">
+            <div class="card">
+                <h2>💼 我的持股明細</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>代號</th>
+                            <th>名稱</th>
+                            <th>持有股數</th>
+                            <th>買入價</th>
+                            <th>投入金額</th>
+                            <th>每股年配息</th>
+                            <th>年股息</th>
+                            <th>健保狀態</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdings-body">
+                        <!-- 由 JavaScript 動態生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Tab 4: 新增持股 -->
+        <div id="add" class="tab-content">
+            <div class="card">
+                <h2>➕ 新增持股</h2>
+                
+                <div class="form-group">
+                    <label>選擇標的</label>
+                    <select id="select-stock">
+                        <option value="">-- 請選擇 --</option>
+                        <!-- 由 JavaScript 動態生成 -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>持有股數</label>
+                    <input type="number" id="input-shares" placeholder="例如：5000" min="1">
+                    <small style="color:#666;">提示：5000 股 = 5 張</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>買入價格（元）</label>
+                    <input type="number" id="input-price" placeholder="例如：50" min="0" step="0.01">
+                </div>
+                
+                <div id="add-preview" style="display:none;margin:20px 0;padding:20px;background:#f8f9fa;border-radius:10px;">
+                    <h3 style="color:#667eea;margin-bottom:15px;">📋 預覽</h3>
+                    <div id="add-preview-content"></div>
+                </div>
+                
+                <button class="btn btn-success" onclick="addHolding()" style="width:100%;padding:15px;font-size:1.1em;">
+                    ✅ 確認新增
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 股票資料庫（包含殖利率等資訊）
+        const stockDatabase = [
+            // 🏆 市值型 ETF TOP 9（追蹤大盤、科技股）
+            { symbol: '0050', name: '元大台灣50', type: 'ETF-市值型', yield: 3.5, price: 76.20, dividend: 6.93, frequency: '年配息' },
+            { symbol: '006208', name: '富邦台50', type: 'ETF-市值型', yield: 3.5, price: 176.55, dividend: 4.52, frequency: '年配息' },
+            { symbol: '00632R', name: '元大台灣50反1', type: 'ETF-反向型', yield: 0.5, price: 14.10, dividend: 0.04, frequency: '年配息' },
+            { symbol: '00692', name: '富邦公司治理', type: 'ETF-ESG', yield: 4.0, price: 67.05, dividend: 1.8, frequency: '年配息' },
+            { symbol: '00701', name: '國泰股利精選30', type: 'ETF-高股息', yield: 5.0, price: 28.92, dividend: 1.75, frequency: '年配息' },
+            { symbol: '00881', name: '國泰台灣5G+', type: 'ETF-科技', yield: 2.5, price: 37.38, dividend: 0.7, frequency: '年配息' },
+            { symbol: '00891', name: '中信關鍵半導體', type: 'ETF-半導體', yield: 2.8, price: 24.50, dividend: 1.26, frequency: '年配息' },
+            { symbol: '00895', name: '富邦未來車', type: 'ETF-電動車', yield: 2.0, price: 39.95, dividend: 0.64, frequency: '年配息' },
+            { symbol: '00896', name: '中信綠能及電動車', type: 'ETF-綠能', yield: 2.2, price: 21.19, dividend: 0.62, frequency: '年配息' },
+            
+            // 💰 高股息 ETF（5 檔）- 價格已更新為真實股價
+            { symbol: '00919', name: '群益台灣精選高息', type: 'ETF-高股息', yield: 8.5, price: 22.85, dividend: 4.25, frequency: '月配息' },
+            { symbol: '00929', name: '復華台灣科技優息', type: 'ETF-高股息', yield: 7.5, price: 19.63, dividend: 3.6, frequency: '月配息' },
+            { symbol: '00918', name: '大華優利高填息30', type: 'ETF-高股息', yield: 7.0, price: 22.35, dividend: 3.15, frequency: '季配息' },
+            { symbol: '00878', name: '國泰永續高股息', type: 'ETF-高股息', yield: 6.5, price: 22.44, dividend: 2.6, frequency: '季配息' },
+            { symbol: '0056', name: '元大高股息', type: 'ETF-高股息', yield: 5.5, price: 38.58, dividend: 2.09, frequency: '年配息' },
+            
+            // 權值股（10 檔）
+            { symbol: '2330', name: '台積電', type: '半導體', yield: 2.5, price: 1845, dividend: 46.75, frequency: '季配息' },
+            { symbol: '2317', name: '鴻海', type: '電子', yield: 4.0, price: 200, dividend: 7.2, frequency: '年配息' },
+            { symbol: '2454', name: '聯發科', type: '半導體', yield: 3.0, price: 1620, dividend: 48.9, frequency: '年配息' },
+            { symbol: '2412', name: '中華電', type: '電信', yield: 4.5, price: 135, dividend: 5.63, frequency: '季配息' },
+            { symbol: '2882', name: '國泰金', type: '金融', yield: 5.0, price: 71.40, dividend: 3.75, frequency: '年配息' },
+            { symbol: '2891', name: '中信金', type: '金融', yield: 5.5, price: 52.80, dividend: 2.92, frequency: '年配息' },
+            { symbol: '2886', name: '兆豐金', type: '金融', yield: 6.0, price: 39.15, dividend: 2.34, frequency: '年配息' },
+            { symbol: '2881', name: '富邦金', type: '金融', yield: 4.5, price: 88.80, dividend: 4.01, frequency: '年配息' },
+            { symbol: '2892', name: '第一金', type: '金融', yield: 5.0, price: 28.70, dividend: 1.45, frequency: '年配息' },
+            { symbol: '2884', name: '玉山金', type: '金融', yield: 5.0, price: 32.10, dividend: 1.45, frequency: '年配息' },
+            
+            // 電子股（7 檔）
+            { symbol: '2303', name: '聯電', type: '半導體', yield: 4.0, price: 59.10, dividend: 2.6, frequency: '年配息' },
+            { symbol: '2308', name: '台達電', type: '電源', yield: 3.5, price: 1550, dividend: 15.75, frequency: '年配息' },
+            { symbol: '2382', name: '廣達', type: '電腦', yield: 3.0, price: 285, dividend: 9.6, frequency: '年配息' },
+            { symbol: '2357', name: '華碩', type: '電腦', yield: 3.5, price: 565, dividend: 20.3, frequency: '年配息' },
+            { symbol: '3711', name: '日月光投控', type: '半導體', yield: 4.0, price: 352, dividend: 6.2, frequency: '年配息' },
+            { symbol: '2327', name: '國巨', type: '被動元件', yield: 3.0, price: 260, dividend: 20.4, frequency: '年配息' },
+            { symbol: '2379', name: '瑞昱', type: 'IC設計', yield: 3.5, price: 489, dividend: 17.12, frequency: '年配息' },
+            
+            // 傳產股（5 檔）
+            { symbol: '2002', name: '中鋼', type: '鋼鐵', yield: 5.0, price: 19.30, dividend: 0.95, frequency: '年配息' },
+            { symbol: '1301', name: '台塑', type: '塑化', yield: 4.5, price: 45.65, dividend: 3.96, frequency: '年配息' },
+            { symbol: '1303', name: '南亞', type: '塑化', yield: 4.5, price: 76, dividend: 3.47, frequency: '年配息' },
+            { symbol: '1326', name: '台化', type: '塑化', yield: 4.5, price: 42.85, dividend: 4.28, frequency: '年配息' },
+            { symbol: '2105', name: '正新', type: '輪胎', yield: 4.0, price: 29.75, dividend: 1.2, frequency: '年配息' },
+            
+            // 中小型股（11 檔）
+            { symbol: '2353', name: '宏碁', type: '電腦', yield: 4.0, price: 27.10, dividend: 1.08, frequency: '年配息' },
+            { symbol: '2324', name: '仁寶', type: '電腦', yield: 4.0, price: 31.50, dividend: 1.28, frequency: '年配息' },
+            { symbol: '2618', name: '長榮航', type: '航運', yield: 3.5, price: 35.65, dividend: 1.26, frequency: '年配息' },
+            { symbol: '2838', name: '聯邦銀', type: '金融', yield: 5.5, price: 20.55, dividend: 1.1, frequency: '年配息' },
+            { symbol: '2812', name: '台中銀', type: '金融', yield: 5.0, price: 20.60, dividend: 1.05, frequency: '年配息' },
+            { symbol: '2887', name: '台新金', type: '金融', yield: 5.0, price: 24.45, dividend: 1.2, frequency: '年配息' },
+            { symbol: '2851', name: '中再保', type: '保險', yield: 5.5, price: 31.60, dividend: 1.71, frequency: '年配息' },
+            { symbol: '2890', name: '永豐金', type: '金融', yield: 5.0, price: 31.85, dividend: 1.6, frequency: '年配息' },
+            { symbol: '1102', name: '亞泥', type: '水泥', yield: 4.5, price: 34.50, dividend: 1.58, frequency: '年配息' },
+            { symbol: '5876', name: '上海商銀', type: '金融', yield: 5.0, price: 39.55, dividend: 1.95, frequency: '年配息' },
+            { symbol: '2816', name: '旺旺保', type: '保險', yield: 5.0, price: 31.60, dividend: 1.55, frequency: '年配息' },
+            
+            // 🤖 AI 相關（5 檔）
+            { symbol: '3443', name: '創意', type: 'AI晶片', yield: 2.5, price: 2475, dividend: 30, frequency: '年配息' },
+            { symbol: '6510', name: '精測', type: 'AI測試', yield: 2.8, price: 3195, dividend: 23.8, frequency: '年配息' },
+            { symbol: '2395', name: '研華', type: '工業AI', yield: 3.2, price: 333.50, dividend: 18.56, frequency: '年配息' },
+            { symbol: '2356', name: '英業達', type: 'AI伺服器', yield: 3.5, price: 42.90, dividend: 2.38, frequency: '年配息' },
+            { symbol: '6669', name: '緯穎', type: 'AI伺服器', yield: 2.0, price: 3760, dividend: 75.3, frequency: '年配息' },
+            
+            // ⚡ 電力相關（3 檔）
+            { symbol: '1101', name: '台泥', type: '綠能', yield: 4.0, price: 23, dividend: 1.8, frequency: '年配息' },
+            { symbol: '6506', name: '雙鴻', type: '散熱', yield: 3.0, price: 16.45, dividend: 10.5, frequency: '年配息' },
+            { symbol: '6411', name: '晶焱', type: '電源IC', yield: 3.5, price: 77.80, dividend: 6.3, frequency: '年配息' },
+            
+            // 📡 通訊相關（4 檔）
+            { symbol: '3045', name: '台灣大', type: '5G電信', yield: 4.2, price: 109, dividend: 4.62, frequency: '年配息' },
+            { symbol: '4904', name: '遠傳', type: '5G電信', yield: 4.0, price: 94, dividend: 3.8, frequency: '年配息' },
+            { symbol: '2049', name: '上銀', type: '工業自動化', yield: 3.0, price: 234.50, dividend: 7.05, frequency: '年配息' },
+            { symbol: '3008', name: '大立光', type: '光學', yield: 2.5, price: 2220, dividend: 70, frequency: '年配息' },
+            
+            // 🏆 其他重要（3 檔）
+            { symbol: '6505', name: '台塑化', type: '塑化', yield: 4.5, price: 54.50, dividend: 4.73, frequency: '年配息' },
+            { symbol: '2207', name: '和泰車', type: '汽車', yield: 3.5, price: 499, dividend: 22.75, frequency: '年配息' },
+            { symbol: '2880', name: '華南金', type: '金融', yield: 5.0, price: 34.15, dividend: 1.35, frequency: '年配息' },
+            
+            // 📈 高年化報酬率 TOP 10（成長型股票）
+            { symbol: '2409', name: '友達', type: '面板', yield: 3.0, price: 15, dividend: 0.66, frequency: '年配息' },
+            { symbol: '3034', name: '聯詠', type: 'IC設計', yield: 3.5, price: 377.50, dividend: 20.3, frequency: '年配息' },
+            { symbol: '2301', name: '光寶科', type: '光電', yield: 3.8, price: 157.50, dividend: 4.75, frequency: '年配息' },
+            { symbol: '2408', name: '南亞科', type: '記憶體', yield: 3.2, price: 226.50, dividend: 3.04, frequency: '年配息' },
+            { symbol: '2344', name: '華邦電', type: '記憶體', yield: 3.5, price: 98.20, dividend: 1.33, frequency: '年配息' },
+            { symbol: '3481', name: '群創', type: '面板', yield: 3.0, price: 25.65, dividend: 0.54, frequency: '年配息' },
+            { symbol: '6176', name: '瑞儀', type: '背光模組', yield: 3.8, price: 92, dividend: 6.38, frequency: '年配息' },
+            { symbol: '2371', name: '大同', type: '綜合', yield: 2.5, price: 31.05, dividend: 1.3, frequency: '年配息' },
+            { symbol: '6414', name: '樺漢', type: 'AI邊緣運算', yield: 3.0, price: 269, dividend: 11.4, frequency: '年配息' },
+            { symbol: '3661', name: '世芯-KY', type: 'ASIC設計', yield: 2.8, price: 3150, dividend: 51.8, frequency: '年配息' },
+        ];
+        
+        // 本地儲存
+        let myHoldings = JSON.parse(localStorage.getItem('myHoldings') || '[]');
+        
+        // 配息資料（從爬蟲）
+        let dividendData = {};
+        let dividendDataLoaded = false;
+        
+        // 載入配息資料
+        async function loadDividendData() {
+            try {
+                const response = await fetch('dividend_data.json');
+                if (response.ok) {
+                    dividendData = await response.json();
+                    dividendDataLoaded = true;
+                    console.log('✅ 配息資料載入成功:', Object.keys(dividendData).length, '支股票');
+                    
+                    // 更新資料庫中的配息資訊
+                    stockDatabase.forEach(stock => {
+                        if (dividendData[stock.symbol]) {
+                            const data = dividendData[stock.symbol];
+                            stock.dividend = data.total_dividend;
+                            stock.yield = data.yield;
+                            stock.consecutive10Years = data.consecutive_10_years;
+                            stock.dividendCount10Year = data.dividend_count_10year;
+                        }
+                    });
+                    
+                    // 重新載入排行榜
+                    if (document.getElementById('ranking-body')) {
+                        loadRanking();
+                    }
+                    
+                    // 重新載入選擇選項
+                    if (document.getElementById('select-stock')) {
+                        loadSelectOptions();
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ 配息資料載入失敗，使用預設值:', e);
+            }
+        }
+        
+        // 即時股價快取
+        let realTimePrices = {};
+        let pricesFetched = false;
+        
+        // 檢查快取是否有效（24 小時內）
+        function isCacheValid() {
+            const cacheTime = localStorage.getItem('stockPriceCacheTime');
+            if (!cacheTime) return false;
+            
+            const now = new Date().getTime();
+            const cached = parseInt(cacheTime);
+            const hoursPassed = (now - cached) / (1000 * 60 * 60);
+            
+            return hoursPassed < 24;
+        }
+        
+        // 讀取快取
+        function loadPriceCache() {
+            const cache = localStorage.getItem('stockPriceCache');
+            if (cache && isCacheValid()) {
+                try {
+                    realTimePrices = JSON.parse(cache);
+                    // 更新資料庫中的價格
+                    Object.keys(realTimePrices).forEach(symbol => {
+                        const stock = stockDatabase.find(s => s.symbol === symbol);
+                        if (stock) {
+                            stock.price = realTimePrices[symbol];
+                        }
+                    });
+                    pricesFetched = true;
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+        
+        // 儲存快取
+        function savePriceCache() {
+            localStorage.setItem('stockPriceCache', JSON.stringify(realTimePrices));
+            localStorage.setItem('stockPriceCacheTime', new Date().getTime().toString());
+        }
+        
+        // 抓取即時股價（支援上市、上櫃、興櫃）
+        async function fetchRealTimePrice(symbol) {
+            try {
+                // 先嘗試上市
+                let response = await fetch(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_${symbol}.tw&json=1&delay=0`);
+                let data = await response.json();
+                
+                if (data.msgArray && data.msgArray.length > 0) {
+                    const stockData = data.msgArray[0];
+                    const price = parseFloat(stockData.z) || parseFloat(stockData.y);
+                    if (price > 0) return price;
+                }
+                
+                // 嘗試上櫃
+                response = await fetch(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=otc_${symbol}.tw&json=1&delay=0`);
+                data = await response.json();
+                
+                if (data.msgArray && data.msgArray.length > 0) {
+                    const stockData = data.msgArray[0];
+                    const price = parseFloat(stockData.z) || parseFloat(stockData.y);
+                    if (price > 0) return price;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error(`抓取 ${symbol} 股價失敗:`, error);
+                return null;
+            }
+        }
+        
+        // 批次抓取所有股價
+        async function fetchAllPrices() {
+            if (pricesFetched) return; // 避免重複抓取
+            
+            console.log('🔄 開始抓取即時股價...');
+            const symbols = stockDatabase.map(s => s.symbol);
+            const statusDiv = document.getElementById('price-status');
+            
+            for (let i = 0; i < symbols.length; i++) {
+                const symbol = symbols[i];
+                const price = await fetchRealTimePrice(symbol);
+                
+                if (price) {
+                    realTimePrices[symbol] = price;
+                    // 更新資料庫中的價格
+                    const stock = stockDatabase.find(s => s.symbol === symbol);
+                    if (stock) {
+                        stock.price = price;
+                    }
+                }
+                
+                // 更新進度
+                const progress = ((i + 1) / symbols.length * 100).toFixed(0);
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <strong>⏳ 正在抓取即時股價...</strong><br>
+                        <small>進度：${i + 1}/${symbols.length} (${progress}%)</small>
+                    `;
+                }
+                
+                // 每 10 支股票更新一次排行榜
+                if ((i + 1) % 10 === 0) {
+                    console.log(`已抓取 ${i + 1}/${symbols.length} 支股票`);
+                    loadRanking();
+                }
+                
+                // 避免被 ban，每支股票間隔 300ms
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            pricesFetched = true;
+            
+            // 儲存快取
+            savePriceCache();
+            console.log('✅ 即時股價抓取完成並已快取（24 小時有效）');
+            
+            // 最後更新
+            const cacheTime = new Date();
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <strong style="color:#28a745;">✅ 即時股價已更新！</strong><br>
+                    <small>更新時間：${cacheTime.toLocaleString('zh-TW')} | 快取有效期：24 小時</small>
+                `;
+                statusDiv.style.background = '#d4edda';
+            }
+            
+            // 更新表頭
+            const priceHeader = document.getElementById('price-header');
+            if (priceHeader) {
+                priceHeader.textContent = '目前股價（真實）';
+            }
+            
+            // 重新載入排行榜
+            loadRanking();
+        }
+        
+        // 初始化
+        window.onload = function() {
+            // 先載入配息資料
+            loadDividendData();
+            
+            loadRanking();
+            loadSelectOptions();
+            updateDashboard();
+            updateHoldings();
+            
+            // 檢查快取
+            if (loadPriceCache()) {
+                console.log('✅ 使用快取股價（24 小時內有效）');
+                const statusDiv = document.getElementById('price-status');
+                const cacheTime = new Date(parseInt(localStorage.getItem('stockPriceCacheTime')));
+                if (statusDiv) {
+                    statusDiv.innerHTML = `
+                        <strong style="color:#28a745;">✅ 使用快取股價</strong><br>
+                        <small>更新時間：${cacheTime.toLocaleString('zh-TW')} | 24 小時內無需重新抓取</small>
+                    `;
+                    statusDiv.style.background = '#d4edda';
+                }
+                const priceHeader = document.getElementById('price-header');
+                if (priceHeader) {
+                    priceHeader.textContent = '目前股價（真實）';
+                }
+                loadRanking();
+            } else {
+                console.log('⏳ 快取過期或不存在，開始抓取即時股價...');
+                // 背景抓取即時股價
+                fetchAllPrices();
+            }
+        };
+        
+        // 強制更新股價
+        async function forceRefreshPrices() {
+            if (!confirm('確定要強制更新股價嗎？\n\n這將重新抓取所有 82 支股票的即時股價，需要約 30 秒。')) {
+                return;
+            }
+            
+            // 清除快取
+            localStorage.removeItem('stockPriceCache');
+            localStorage.removeItem('stockPriceCacheTime');
+            pricesFetched = false;
+            realTimePrices = {};
+            
+            // 重新抓取
+            const statusDiv = document.getElementById('price-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <strong>⏳ 正在抓取即時股價...</strong><br>
+                    <small>首次載入需要約 30 秒，請稍候</small>
+                `;
+                statusDiv.style.background = '#fff3cd';
+            }
+            
+            await fetchAllPrices();
+        }
+        
+        // 分頁切換
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 載入殖利率排行
+        function loadRanking() {
+            const sorted = [...stockDatabase].sort((a, b) => b.yield - a.yield);
+            const tbody = document.getElementById('ranking-body');
+            
+            // 顯示股價狀態（即時 or 參考）
+            const priceLabel = pricesFetched ? '即時股價' : '參考股價';
+            const priceNote = pricesFetched ? '（已更新）' : '（載入中...）';
+            
+            tbody.innerHTML = sorted.map((stock, index) => {
+                const actualYield = stock.price > 0 ? ((stock.dividend / stock.price) * 100).toFixed(2) : stock.yield.toFixed(2);
+                
+                // 10年連續配息標記
+                let consecutive10Badge = '';
+                if (stock.consecutive10Years === true) {
+                    consecutive10Badge = '<span class="badge badge-safe">✅ 是 (10年)</span>';
+                } else if (stock.dividendCount10Year !== undefined && stock.dividendCount10Year > 0) {
+                    const count = stock.dividendCount10Year;
+                    if (count >= 8) {
+                        consecutive10Badge = `<span class="badge badge-warning">⚠️ ${count}年</span>`;
+                    } else if (count >= 5) {
+                        consecutive10Badge = `<span class="badge" style="background:#fff3cd;color:#856404;">${count}年</span>`;
+                    } else {
+                        consecutive10Badge = `<span class="badge" style="background:#f8d7da;color:#721c24;">${count}年</span>`;
+                    }
+                } else {
+                    consecutive10Badge = '<span class="badge" style="background:#e2e3e5;color:#383d41;">❌ 否</span>';
+                }
+                
+                // 公司類型標記（從配息資料取得）
+                let companyTypeBadge = '<span style="color:#999;">-</span>';
+                let epsDisplay = '<span style="color:#999;">-</span>';
+                let payoutRatioDisplay = '<span style="color:#999;">-</span>';
+                
+                if (dividendDataLoaded && dividendData[stock.symbol]) {
+                    const data = dividendData[stock.symbol];
+                    
+                    // EPS 顯示
+                    if (data.eps > 0) {
+                        epsDisplay = `$${data.eps.toFixed(2)}`;
+                        
+                        // EPS 趨勢顯示
+                        if (data.eps_trend === '成長') {
+                            epsDisplay += ' <span style="color:#28a745;">↗</span>';
+                        } else if (data.eps_trend === '衰退') {
+                            epsDisplay += ' <span style="color:#dc3545;">↘</span>';
+                        } else if (data.eps_trend === '穩定') {
+                            epsDisplay += ' <span style="color:#ffc107;">→</span>';
+                        }
+                    }
+                    
+                    // 配息率顯示
+                    if (data.payout_ratio > 0) {
+                        payoutRatioDisplay = `${data.payout_ratio.toFixed(1)}%`;
+                        
+                        // 配息率顏色標記
+                        if (data.payout_ratio > 100) {
+                            payoutRatioDisplay = `<span style="color:#dc3545;font-weight:bold;">${data.payout_ratio.toFixed(1)}%</span>`;
+                        } else if (data.payout_ratio > 80) {
+                            payoutRatioDisplay = `<span style="color:#ffc107;font-weight:bold;">${data.payout_ratio.toFixed(1)}%</span>`;
+                        } else if (data.payout_ratio >= 50 && data.payout_ratio <= 70) {
+                            payoutRatioDisplay = `<span style="color:#28a745;">${data.payout_ratio.toFixed(1)}%</span>`;
+                        }
+                    }
+                    
+                    // 公司類型徽章
+                    if (data.company_type && data.type_emoji) {
+                        let badgeClass = 'badge-safe';
+                        let badgeStyle = '';
+                        
+                        if (data.company_type === '成長型好公司') {
+                            badgeClass = 'badge-safe';
+                        } else if (data.company_type === '穩健型') {
+                            badgeClass = 'badge-safe';
+                        } else if (data.company_type === '高配息') {
+                            badgeStyle = 'background:#fff3cd;color:#856404;';
+                        } else if (data.company_type === '撐配息') {
+                            badgeClass = 'badge-warning';
+                        } else if (data.company_type === '吃老本') {
+                            badgeClass = 'badge-danger';
+                        } else {
+                            badgeStyle = 'background:#e2e3e5;color:#383d41;';
+                        }
+                        
+                        companyTypeBadge = `<span class="badge ${badgeClass}" style="${badgeStyle}" title="${data.type_description}">${data.type_emoji} ${data.company_type}</span>`;
+                    }
+                }
+                
+                return `
+                    <tr>
+                        <td><strong>${index + 1}</strong></td>
+                        <td><strong>${stock.symbol}</strong></td>
+                        <td>${stock.name}</td>
+                        <td><span class="badge badge-safe">${stock.type}</span></td>
+                        <td>${companyTypeBadge}</td>
+                        <td class="positive">${actualYield}%</td>
+                        <td>$${stock.price.toFixed(2)}</td>
+                        <td>${epsDisplay}</td>
+                        <td>${payoutRatioDisplay}</td>
+                        <td>$${stock.dividend.toFixed(2)}</td>
+                        <td>${consecutive10Badge}</td>
+                        <td>${stock.frequency}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="quickAdd('${stock.symbol}')">
+                                ➕ 快速新增
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // 載入選擇選項
+        function loadSelectOptions() {
+            const select = document.getElementById('select-stock');
+            if (!select) {
+                console.warn('⚠️ select-stock 元素不存在');
+                return;
+            }
+            
+            console.log('📋 載入選擇選項，股票數量:', stockDatabase.length);
+            
+            const sorted = [...stockDatabase].sort((a, b) => b.yield - a.yield);
+            
+            select.innerHTML = '<option value="">-- 請選擇 --</option>' +
+                sorted.map(stock => 
+                    `<option value="${stock.symbol}">${stock.symbol} ${stock.name} (殖利率 ${stock.yield.toFixed(2)}%)</option>`
+                ).join('');
+            
+            console.log('✅ 選項已載入:', select.options.length, '個選項');
+            
+            // 移除舊的 listener，避免重複綁定
+            select.removeEventListener('change', updatePreview);
+            select.addEventListener('change', updatePreview);
+        }
+        
+        // 更新預覽
+        function updatePreview() {
+            const symbol = document.getElementById('select-stock').value;
+            const shares = parseInt(document.getElementById('input-shares').value) || 0;
+            const price = parseFloat(document.getElementById('input-price').value) || 0;
+            
+            if (!symbol || shares <= 0 || price <= 0) {
+                document.getElementById('add-preview').style.display = 'none';
+                return;
+            }
+            
+            const stock = stockDatabase.find(s => s.symbol === symbol);
+            const investment = shares * price;
+            const annualDividend = shares * stock.dividend;
+            const yieldActual = (annualDividend / investment * 100).toFixed(2);
+            
+            const healthStatus = annualDividend >= 20000 ? 
+                '<span class="badge badge-danger">⚠️ 超過 20,000（需扣 1.91%）</span>' :
+                '<span class="badge badge-safe">✅ 低於 20,000（無需扣費）</span>';
+            
+            document.getElementById('add-preview-content').innerHTML = `
+                <p><strong>股票</strong>：${stock.symbol} ${stock.name}</p>
+                <p><strong>持有股數</strong>：${shares.toLocaleString()} 股 (${(shares / 1000).toFixed(1)} 張)</p>
+                <p><strong>買入價格</strong>：$${price.toFixed(2)}</p>
+                <p><strong>投入金額</strong>：<span class="positive">$${investment.toLocaleString()}</span></p>
+                <p><strong>每股年配息</strong>：$${stock.dividend.toFixed(2)}</p>
+                <p><strong>年股息收入</strong>：<span class="positive">$${annualDividend.toLocaleString()}</span></p>
+                <p><strong>實際殖利率</strong>：${yieldActual}%</p>
+                <p><strong>健保狀態</strong>：${healthStatus}</p>
+            `;
+            
+            document.getElementById('add-preview').style.display = 'block';
+        }
+        
+        // 新增持股
+        function addHolding() {
+            const symbol = document.getElementById('select-stock').value;
+            const shares = parseInt(document.getElementById('input-shares').value);
+            const price = parseFloat(document.getElementById('input-price').value);
+            
+            if (!symbol || !shares || !price) {
+                alert('❌ 請填寫完整資料');
+                return;
+            }
+            
+            const stock = stockDatabase.find(s => s.symbol === symbol);
+            
+            // 檢查是否已存在
+            const existing = myHoldings.find(h => h.symbol === symbol);
+            if (existing) {
+                if (!confirm(`已持有 ${symbol} ${stock.name}，是否覆蓋？`)) {
+                    return;
+                }
+                myHoldings = myHoldings.filter(h => h.symbol !== symbol);
+            }
+            
+            myHoldings.push({
+                symbol: symbol,
+                name: stock.name,
+                type: stock.type,
+                shares: shares,
+                buyPrice: price,
+                dividend: stock.dividend,
+                frequency: stock.frequency,
+                addedDate: new Date().toISOString()
+            });
+            
+            localStorage.setItem('myHoldings', JSON.stringify(myHoldings));
+            
+            alert('✅ 新增成功！');
+            
+            // 清空表單
+            document.getElementById('select-stock').value = '';
+            document.getElementById('input-shares').value = '';
+            document.getElementById('input-price').value = '';
+            document.getElementById('add-preview').style.display = 'none';
+            
+            // 更新顯示
+            updateDashboard();
+            updateHoldings();
+            
+            // 切換到持股頁面
+            switchTab('holdings');
+            document.querySelectorAll('.tab-button')[2].classList.add('active');
+        }
+        
+        // 快速新增
+        function quickAdd(symbol) {
+            const stock = stockDatabase.find(s => s.symbol === symbol);
+            document.getElementById('select-stock').value = symbol;
+            document.getElementById('input-price').value = stock.price;
+            updatePreview();
+            switchTab('add');
+            document.querySelectorAll('.tab-button')[3].classList.add('active');
+        }
+        
+        // 更新儀表板
+        function updateDashboard() {
+            let totalInvestment = 0;
+            let totalDividend = 0;
+            
+            myHoldings.forEach(h => {
+                totalInvestment += h.shares * h.buyPrice;
+                totalDividend += h.shares * h.dividend;
+            });
+            
+            const avgYield = totalInvestment > 0 ? (totalDividend / totalInvestment * 100) : 0;
+            
+            document.getElementById('total-investment').textContent = '$' + totalInvestment.toLocaleString();
+            document.getElementById('total-dividend').textContent = '$' + totalDividend.toLocaleString();
+            document.getElementById('avg-yield').textContent = avgYield.toFixed(2) + '%';
+            document.getElementById('total-holdings').textContent = myHoldings.length;
+            
+            // 生成提示
+            generateAlerts(totalInvestment, totalDividend, avgYield);
+            generateTips(totalInvestment, totalDividend);
+        }
+        
+        // 生成警告
+        function generateAlerts(totalInvestment, totalDividend, avgYield) {
+            const alertsDiv = document.getElementById('dashboard-alerts');
+            const alerts = [];
+            
+            // 檢查是否有標的超過 20,000 元
+            const overLimit = myHoldings.filter(h => h.shares * h.dividend >= 20000);
+            if (overLimit.length > 0) {
+                alerts.push(`
+                    <div class="alert alert-warning">
+                        ⚠️ 有 ${overLimit.length} 檔標的年股息超過 20,000 元，將被扣 1.91% 補充保費。建議分散持股。
+                    </div>
+                `);
+            }
+            
+            // 檢查是否過度集中
+            if (myHoldings.length > 0 && myHoldings.length < 3) {
+                alerts.push(`
+                    <div class="alert alert-warning">
+                        💡 目前僅持有 ${myHoldings.length} 檔，建議分散至 3-8 檔降低風險。
+                    </div>
+                `);
+            }
+            
+            // 檢查平均殖利率
+            if (avgYield < 5) {
+                alerts.push(`
+                    <div class="alert alert-warning">
+                        📉 平均殖利率 ${avgYield.toFixed(2)}% 偏低，可考慮調整配置提高被動收入。
+                    </div>
+                `);
+            }
+            
+            if (alerts.length === 0) {
+                alerts.push(`
+                    <div class="alert alert-success">
+                        ✅ 您的投資組合配置良好！繼續保持定期定額紀律。
+                    </div>
+                `);
+            }
+            
+            alertsDiv.innerHTML = alerts.join('');
+        }
+        
+        // 生成建議
+        function generateTips(totalInvestment, totalDividend) {
+            const tipsDiv = document.getElementById('quick-tips');
+            const tips = [];
+            
+            // 月收入估算
+            const monthlyIncome = totalDividend / 12;
+            tips.push(`<p>📅 <strong>每月被動收入約</strong>：$${monthlyIncome.toLocaleString()} 元</p>`);
+            
+            // 季收入估算
+            const quarterlyIncome = totalDividend / 4;
+            tips.push(`<p>📅 <strong>每季被動收入約</strong>：$${quarterlyIncome.toLocaleString()} 元</p>`);
+            
+            // 建議再投入金額
+            if (totalInvestment > 0 && myHoldings.length > 0) {
+                const avgDividendPerHolding = totalDividend / myHoldings.length;
+                if (avgDividendPerHolding < 15000) {
+                    const canAddPerHolding = 20000 - avgDividendPerHolding;
+                    tips.push(`<p>💡 <strong>可加碼空間</strong>：每檔平均還可增加 $${canAddPerHolding.toLocaleString()} 元年股息（不超健保門檻）</p>`);
+                }
+            }
+            
+            tipsDiv.innerHTML = tips.join('');
+        }
+        
+        // 更新持股列表
+        function updateHoldings() {
+            const tbody = document.getElementById('holdings-body');
+            
+            if (myHoldings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;">尚無持股，請到「➕ 新增持股」開始建立投資組合</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = myHoldings.map(h => {
+                const investment = h.shares * h.buyPrice;
+                const annualDividend = h.shares * h.dividend;
+                const healthStatus = annualDividend >= 20000 ?
+                    '<span class="badge badge-danger">⚠️ 超過 20,000</span>' :
+                    annualDividend >= 18000 ?
+                    '<span class="badge badge-warning">⚠️ 接近 20,000</span>' :
+                    '<span class="badge badge-safe">✅ 安全範圍</span>';
+                
+                return `
+                    <tr>
+                        <td><strong>${h.symbol}</strong></td>
+                        <td>${h.name}</td>
+                        <td>${h.shares.toLocaleString()} 股<br><small>(${(h.shares/1000).toFixed(1)} 張)</small></td>
+                        <td>$${h.buyPrice.toFixed(2)}</td>
+                        <td class="positive">$${investment.toLocaleString()}</td>
+                        <td>$${h.dividend.toFixed(2)}</td>
+                        <td class="positive">$${annualDividend.toLocaleString()}</td>
+                        <td>${healthStatus}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeHolding('${h.symbol}')">
+                                🗑️ 刪除
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // 刪除持股
+        function removeHolding(symbol) {
+            if (!confirm(`確定要刪除 ${symbol} 嗎？`)) {
+                return;
+            }
+            
+            myHoldings = myHoldings.filter(h => h.symbol !== symbol);
+            localStorage.setItem('myHoldings', JSON.stringify(myHoldings));
+            
+            updateDashboard();
+            updateHoldings();
+            
+            alert('✅ 刪除成功！');
+        }
+        
+        // 監聽輸入變化
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('input-shares')?.addEventListener('input', updatePreview);
+            document.getElementById('input-price')?.addEventListener('input', updatePreview);
+        });
+    </script>
+</body>
+</html>

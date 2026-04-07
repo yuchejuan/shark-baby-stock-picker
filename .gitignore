@@ -1,0 +1,43 @@
+# 資料庫檔案
+*.db
+*.db-journal
+
+# 日誌檔案
+*.log
+logs/
+
+# 執行檔
+daily_picker_integrated
+daily_picker_v3
+daily_stock_picker
+daily_stock_picker_all
+dividend_scraper
+realtime_price_updater
+portfolio_api
+trade_api
+trade_manager
+
+# 備份檔案
+*.backup
+*.bak
+misc/
+
+# 臨時資料
+signal_backtest_result.json
+
+# 敏感資料（如果有）
+config.json
+.env
+
+# Go 編譯產物
+go.sum
+bin/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

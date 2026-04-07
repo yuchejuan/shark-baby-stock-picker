@@ -1,0 +1,250 @@
+{
+  "date": "2026-04-07",
+  "update_time": "2026-04-07 01:26:17",
+  "hot_sectors": [
+    {
+      "code": "電力",
+      "name": "電力",
+      "change_rate": 0.6927273440872876,
+      "volume": 6175482,
+      "lead_stocks": [
+        "同欣電 (6271) +1.68%"
+      ],
+      "stock_count": 2,
+      "up_count": 1,
+      "down_count": 1
+    },
+    {
+      "code": "金融",
+      "name": "金融",
+      "change_rate": -0.06385411993139874,
+      "volume": 253659456,
+      "lead_stocks": [
+        "安泰銀 (2849) -2.61%"
+      ],
+      "stock_count": 17,
+      "up_count": 8,
+      "down_count": 7
+    },
+    {
+      "code": "傳產",
+      "name": "傳產",
+      "change_rate": -0.7229228328791864,
+      "volume": 88908074,
+      "lead_stocks": [
+        "華新 (1605) -2.27%"
+      ],
+      "stock_count": 8,
+      "up_count": 1,
+      "down_count": 6
+    },
+    {
+      "code": "通訊",
+      "name": "通訊",
+      "change_rate": -0.8650986032367056,
+      "volume": 32935603,
+      "lead_stocks": [
+        "緯創 (3231) -1.57%"
+      ],
+      "stock_count": 4,
+      "up_count": 0,
+      "down_count": 4
+    },
+    {
+      "code": "權值股",
+      "name": "權值股",
+      "change_rate": -1.1289419553975106,
+      "volume": 229711154,
+      "lead_stocks": [
+        "台達電 (2308) -3.05%"
+      ],
+      "stock_count": 10,
+      "up_count": 1,
+      "down_count": 7
+    }
+  ],
+  "cold_sectors": [
+    {
+      "code": "其他",
+      "name": "其他",
+      "change_rate": -8.444444444444445,
+      "volume": 5494410,
+      "lead_stocks": [
+        "世紀鋼 (9958) -8.44%"
+      ],
+      "stock_count": 1,
+      "up_count": 0,
+      "down_count": 1
+    },
+    {
+      "code": "AI相關",
+      "name": "AI相關",
+      "change_rate": -2.2010838431362587,
+      "volume": 141449612,
+      "lead_stocks": [
+        "聯電 (2303) -6.62%"
+      ],
+      "stock_count": 5,
+      "up_count": 0,
+      "down_count": 4
+    },
+    {
+      "code": "中小型",
+      "name": "中小型",
+      "change_rate": -1.507748851087111,
+      "volume": 56611628,
+      "lead_stocks": [
+        "豐泰 (9910) -3.30%"
+      ],
+      "stock_count": 10,
+      "up_count": 0,
+      "down_count": 10
+    },
+    {
+      "code": "電子",
+      "name": "電子",
+      "change_rate": -1.3008975554922555,
+      "volume": 49913272,
+      "lead_stocks": [
+        "大立光 (3008) -2.28%"
+      ],
+      "stock_count": 7,
+      "up_count": 1,
+      "down_count": 6
+    },
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": -1.1786270842173943,
+      "volume": 588607669,
+      "lead_stocks": [
+        "中信綠能及電動車 (00896) -2.15%"
+      ],
+      "stock_count": 14,
+      "up_count": 1,
+      "down_count": 13
+    }
+  ],
+  "all_sectors": [
+    {
+      "code": "電力",
+      "name": "電力",
+      "change_rate": 0.6927273440872876,
+      "volume": 6175482,
+      "lead_stocks": [
+        "同欣電 (6271) +1.68%"
+      ],
+      "stock_count": 2,
+      "up_count": 1,
+      "down_count": 1
+    },
+    {
+      "code": "金融",
+      "name": "金融",
+      "change_rate": -0.06385411993139874,
+      "volume": 253659456,
+      "lead_stocks": [
+        "安泰銀 (2849) -2.61%"
+      ],
+      "stock_count": 17,
+      "up_count": 8,
+      "down_count": 7
+    },
+    {
+      "code": "傳產",
+      "name": "傳產",
+      "change_rate": -0.7229228328791864,
+      "volume": 88908074,
+      "lead_stocks": [
+        "華新 (1605) -2.27%"
+      ],
+      "stock_count": 8,
+      "up_count": 1,
+      "down_count": 6
+    },
+    {
+      "code": "通訊",
+      "name": "通訊",
+      "change_rate": -0.8650986032367056,
+      "volume": 32935603,
+      "lead_stocks": [
+        "緯創 (3231) -1.57%"
+      ],
+      "stock_count": 4,
+      "up_count": 0,
+      "down_count": 4
+    },
+    {
+      "code": "權值股",
+      "name": "權值股",
+      "change_rate": -1.1289419553975106,
+      "volume": 229711154,
+      "lead_stocks": [
+        "台達電 (2308) -3.05%"
+      ],
+      "stock_count": 10,
+      "up_count": 1,
+      "down_count": 7
+    },
+    {
+      "code": "其他",
+      "name": "其他",
+      "change_rate": -8.444444444444445,
+      "volume": 5494410,
+      "lead_stocks": [
+        "世紀鋼 (9958) -8.44%"
+      ],
+      "stock_count": 1,
+      "up_count": 0,
+      "down_count": 1
+    },
+    {
+      "code": "AI相關",
+      "name": "AI相關",
+      "change_rate": -2.2010838431362587,
+      "volume": 141449612,
+      "lead_stocks": [
+        "聯電 (2303) -6.62%"
+      ],
+      "stock_count": 5,
+      "up_count": 0,
+      "down_count": 4
+    },
+    {
+      "code": "中小型",
+      "name": "中小型",
+      "change_rate": -1.507748851087111,
+      "volume": 56611628,
+      "lead_stocks": [
+        "豐泰 (9910) -3.30%"
+      ],
+      "stock_count": 10,
+      "up_count": 0,
+      "down_count": 10
+    },
+    {
+      "code": "電子",
+      "name": "電子",
+      "change_rate": -1.3008975554922555,
+      "volume": 49913272,
+      "lead_stocks": [
+        "大立光 (3008) -2.28%"
+      ],
+      "stock_count": 7,
+      "up_count": 1,
+      "down_count": 6
+    },
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": -1.1786270842173943,
+      "volume": 588607669,
+      "lead_stocks": [
+        "中信綠能及電動車 (00896) -2.15%"
+      ],
+      "stock_count": 14,
+      "up_count": 1,
+      "down_count": 13
+    }
+  ]
+}

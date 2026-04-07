@@ -1,0 +1,89 @@
+{
+  "holdings": [
+    {
+      "symbol": "2618",
+      "name": "長榮航",
+      "shares": 1000,
+      "buy_price": 33.7,
+      "current_price": 35.35,
+      "profit_loss": 1650,
+      "return_pct": 4.896142433234421,
+      "reason": "RSI超賣20.6反彈機會"
+    },
+    {
+      "symbol": "5876",
+      "name": "上海商銀",
+      "shares": 1000,
+      "buy_price": 39.15,
+      "current_price": 39.65,
+      "profit_loss": 500,
+      "return_pct": 1.277139208173691,
+      "reason": "RSI偏低35.8買點"
+    },
+    {
+      "symbol": "1102",
+      "name": "亞泥",
+      "shares": 1000,
+      "buy_price": 34.75,
+      "current_price": 34.5,
+      "profit_loss": -250,
+      "return_pct": -0.7194244604316548,
+      "reason": "穩健中性"
+    },
+    {
+      "symbol": "2353",
+      "name": "宏碁",
+      "shares": 1000,
+      "buy_price": 27.9,
+      "current_price": 27.35,
+      "profit_loss": -550,
+      "return_pct": -1.971326164874552,
+      "reason": "評分68最高,價格突破均線"
+    },
+    {
+      "symbol": "2851",
+      "name": "中再保",
+      "shares": 1000,
+      "buy_price": 28.85,
+      "current_price": 30.65,
+      "profit_loss": 1800,
+      "return_pct": 6.239168110918544,
+      "reason": "評分62,上升趨勢"
+    },
+    {
+      "symbol": "2838",
+      "name": "聯邦銀",
+      "shares": 2000,
+      "buy_price": 20.15,
+      "current_price": 20.5,
+      "profit_loss": 700,
+      "return_pct": 1.7369727047146404,
+      "reason": "價格低20元,RSI中性 | 2026-03-17加碼1張"
+    },
+    {
+      "symbol": "2812",
+      "name": "台中銀",
+      "shares": 1000,
+      "buy_price": 20.95,
+      "current_price": 20.9,
+      "profit_loss": -50,
+      "return_pct": -0.23866348448687352,
+      "reason": "金融股穩健"
+    },
+    {
+      "symbol": "2887",
+      "name": "台新金",
+      "shares": 1000,
+      "buy_price": 24.65,
+      "current_price": 24.15,
+      "profit_loss": -500,
+      "return_pct": -2.028397565922921,
+      "reason": "今日上漲1.23%"
+    }
+  ],
+  "total_cost": 250250,
+  "current_value": 253550,
+  "total_pnl": 3300,
+  "total_return": 1.3186813186813187,
+  "last_update": "2026-04-07 12:06:55"
+}

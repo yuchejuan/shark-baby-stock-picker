@@ -1,0 +1,34 @@
+{
+  "date": "2026-04-07",
+  "update_time": "2026-04-07 01:34:51",
+  "hot_sectors": [
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": -1.113517482212382,
+      "volume": 574977238,
+      "lead_stocks": [
+        "中信綠能及電動車 (00896) -2.15%"
+      ],
+      "stock_count": 10,
+      "up_count": 1,
+      "down_count": 9
+    }
+  ],
+  "cold_sectors": [],
+  "all_sectors": [
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": -1.113517482212382,
+      "volume": 574977238,
+      "lead_stocks": [
+        "中信綠能及電動車 (00896) -2.15%"
+      ],
+      "stock_count": 10,
+      "up_count": 1,
+      "down_count": 9
+    }
+  ],
+  "data_source": "TWSE Official API (Test)"
+}
