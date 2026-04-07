@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -388,7 +390,8 @@ func getCurrentPrices() map[string]float64 {
 	
 	// 降級方案：從 portfolio.json 補充缺失的股價
 	if len(prices) < len(symbols) {
-		data, err := ioutil.ReadFile("stock_web/portfolio.json")
+		wd, _ := os.Getwd()
+		data, err := ioutil.ReadFile(filepath.Join(wd, "html", "portfolio.json"))
 		if err == nil {
 			var portfolioData struct {
 				Holdings []struct {

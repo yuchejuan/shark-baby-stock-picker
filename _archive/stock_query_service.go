@@ -305,7 +305,7 @@ func fetchStockData(symbol string) (*StockData, error) {
 	}
 	
 	// 2. 取得 K 線
-	klines, err := fetchRecentKLines(symbol, 80) // 80 筆確保 MA60 有足夠資料
+	klines, err := fetchRecentKLines(symbol, 60)
 	if err != nil || len(klines) == 0 {
 		return nil, fmt.Errorf("無法取得 K 線數據")
 	}
@@ -356,31 +356,21 @@ func queryStockCode(symbol string) (string, error) {
 }
 
 func fetchRecentKLines(symbol string, days int) ([]KLine, error) {
-	// 抓 5 個月確保 MA60（60 交易日）有足夠資料
-	// 月初時 3 個月只有約 40-55 筆，MA60 會是 0
-	months := 5
-	if days > 60 {
-		months = (days/20) + 2 // 每月約 20 個交易日，多抓 2 個月緩衝
-	}
-
-	// 從舊到新收集（倒序抓，再反轉）
-	var collected []KLine
+	allKLines := []KLine{}
 	now := time.Now()
-	for i := months - 1; i >= 0; i-- {
+	
+	for i := 0; i < 3; i++ {
 		targetDate := now.AddDate(0, -i, 0)
 		klines, _ := fetchMonthlyKLines(symbol, targetDate.Year(), int(targetDate.Month()))
-		collected = append(collected, klines...)
-		if i > 0 {
-			time.Sleep(300 * time.Millisecond)
-		}
+		allKLines = append(allKLines, klines...)
+		time.Sleep(500 * time.Millisecond)
 	}
-
-	// 取最後 days 筆（最近的資料）
-	if len(collected) > days {
-		collected = collected[len(collected)-days:]
+	
+	if len(allKLines) > days {
+		allKLines = allKLines[len(allKLines)-days:]
 	}
-
-	return collected, nil
+	
+	return allKLines, nil
 }
 
 func fetchMonthlyKLines(symbol string, year int, month int) ([]KLine, error) {

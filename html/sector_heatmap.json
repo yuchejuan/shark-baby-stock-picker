@@ -1,0 +1,191 @@
+{
+  "date": "2026-04-07",
+  "update_time": "2026-04-07 19:35:37",
+  "hot_sectors": [
+    {
+      "code": "散熱/電源管理",
+      "name": "散熱/電源管理",
+      "change_rate": -0.07119926638360215,
+      "volume": 106203174,
+      "lead_stocks": [
+        "健策 (3653) +1.35%"
+      ],
+      "stock_count": 6,
+      "up_count": 3,
+      "down_count": 3
+    },
+    {
+      "code": "其他優質中小型",
+      "name": "其他優質中小型",
+      "change_rate": 0,
+      "volume": 1339834,
+      "lead_stocks": [
+        "世芯-KY (3661) +0.00%"
+      ],
+      "stock_count": 1,
+      "up_count": 0,
+      "down_count": 0
+    },
+    {
+      "code": "AI伺服器供應鏈",
+      "name": "AI伺服器供應鏈",
+      "change_rate": 0.8186518449136141,
+      "volume": 244680965,
+      "lead_stocks": [
+        "微星 (2377) +2.29%"
+      ],
+      "stock_count": 15,
+      "up_count": 7,
+      "down_count": 6
+    },
+    {
+      "code": "金融股",
+      "name": "金融股",
+      "change_rate": 0.9271052499873011,
+      "volume": 152768433,
+      "lead_stocks": [
+        "台中銀 (2812) +1.69%"
+      ],
+      "stock_count": 8,
+      "up_count": 5,
+      "down_count": 1
+    },
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": 1.405896561335906,
+      "volume": 356863888,
+      "lead_stocks": [
+        "富邦公司治理 (00692) +1.99%"
+      ],
+      "stock_count": 17,
+      "up_count": 17,
+      "down_count": 0
+    }
+  ],
+  "cold_sectors": [
+    {
+      "code": "散熱/電源管理",
+      "name": "散熱/電源管理",
+      "change_rate": -0.07119926638360215,
+      "volume": 106203174,
+      "lead_stocks": [
+        "健策 (3653) +1.35%"
+      ],
+      "stock_count": 6,
+      "up_count": 3,
+      "down_count": 3
+    },
+    {
+      "code": "其他優質中小型",
+      "name": "其他優質中小型",
+      "change_rate": 0,
+      "volume": 1339834,
+      "lead_stocks": [
+        "世芯-KY (3661) +0.00%"
+      ],
+      "stock_count": 1,
+      "up_count": 0,
+      "down_count": 0
+    },
+    {
+      "code": "AI伺服器供應鏈",
+      "name": "AI伺服器供應鏈",
+      "change_rate": 0.8186518449136141,
+      "volume": 244680965,
+      "lead_stocks": [
+        "微星 (2377) +2.29%"
+      ],
+      "stock_count": 15,
+      "up_count": 7,
+      "down_count": 6
+    },
+    {
+      "code": "金融股",
+      "name": "金融股",
+      "change_rate": 0.9271052499873011,
+      "volume": 152768433,
+      "lead_stocks": [
+        "台中銀 (2812) +1.69%"
+      ],
+      "stock_count": 8,
+      "up_count": 5,
+      "down_count": 1
+    },
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": 1.405896561335906,
+      "volume": 356863888,
+      "lead_stocks": [
+        "富邦公司治理 (00692) +1.99%"
+      ],
+      "stock_count": 17,
+      "up_count": 17,
+      "down_count": 0
+    }
+  ],
+  "all_sectors": [
+    {
+      "code": "散熱/電源管理",
+      "name": "散熱/電源管理",
+      "change_rate": -0.07119926638360215,
+      "volume": 106203174,
+      "lead_stocks": [
+        "健策 (3653) +1.35%"
+      ],
+      "stock_count": 6,
+      "up_count": 3,
+      "down_count": 3
+    },
+    {
+      "code": "其他優質中小型",
+      "name": "其他優質中小型",
+      "change_rate": 0,
+      "volume": 1339834,
+      "lead_stocks": [
+        "世芯-KY (3661) +0.00%"
+      ],
+      "stock_count": 1,
+      "up_count": 0,
+      "down_count": 0
+    },
+    {
+      "code": "AI伺服器供應鏈",
+      "name": "AI伺服器供應鏈",
+      "change_rate": 0.8186518449136141,
+      "volume": 244680965,
+      "lead_stocks": [
+        "微星 (2377) +2.29%"
+      ],
+      "stock_count": 15,
+      "up_count": 7,
+      "down_count": 6
+    },
+    {
+      "code": "金融股",
+      "name": "金融股",
+      "change_rate": 0.9271052499873011,
+      "volume": 152768433,
+      "lead_stocks": [
+        "台中銀 (2812) +1.69%"
+      ],
+      "stock_count": 8,
+      "up_count": 5,
+      "down_count": 1
+    },
+    {
+      "code": "ETF",
+      "name": "ETF",
+      "change_rate": 1.405896561335906,
+      "volume": 356863888,
+      "lead_stocks": [
+        "富邦公司治理 (00692) +1.99%"
+      ],
+      "stock_count": 17,
+      "up_count": 17,
+      "down_count": 0
+    }
+  ],
+  "data_source": "TWSE Official API (Full)"
+}

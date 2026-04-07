@@ -7,18 +7,34 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
-// TWSE API 回應結構（每日收盤價）
+// TWSE API 回應結構
 type TWSEResponse struct {
 	Stat   string     `json:"stat"`
 	Date   string     `json:"date"`
-	Title  string     `json:"title"`
 	Fields []string   `json:"fields"`
 	Data   [][]string `json:"data"`
 }
 
+// 從 Trade API 取得的持倉格式
+type HoldingBatch struct {
+	Symbol       string  `json:"symbol"`
+	Name         string  `json:"name"`
+	Shares       int     `json:"shares"`
+	BuyPrice     float64 `json:"buy_price"`
+	BuyDate      string  `json:"buy_date"`
+	CurrentPrice float64 `json:"current_price"`
+	CurrentValue float64 `json:"current_value"`
+	ProfitLoss   float64 `json:"profit_loss"`
+	ReturnPct    float64 `json:"return_pct"`
+	Reason       string  `json:"reason"`
+	DaysHeld     int     `json:"days_held"`
+}
+
+// portfolio.json 輸出格式
 type Stock struct {
 	Symbol       string  `json:"symbol"`
 	Name         string  `json:"name"`
@@ -39,134 +55,136 @@ type Portfolio struct {
 	LastUpdate   string  `json:"last_update"`
 }
 
-// 從證交所取得當日收盤價
-func getTWSEPrice(code string) (float64, error) {
-	// 取得今天日期 (yyyyMMdd)
-	today := time.Now()
-	dateStr := today.Format("20060102")
-	
-	// 證交所API網址
-	url := fmt.Sprintf("https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date=%s&stockNo=%s", dateStr, code)
-	
-	client := &http.Client{
-		Timeout: 15 * time.Second,
-	}
-	
-	req, err := http.NewRequest("GET", url, nil)
+// 從 Trade API 取得持倉
+func getHoldingsFromAPI() ([]HoldingBatch, error) {
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Get("http://localhost:8888/api/holdings/batches")
 	if err != nil {
-		return 0, err
+		return nil, fmt.Errorf("Trade API 無回應: %v", err)
 	}
-	
-	// 設定 User-Agent 模擬瀏覽器
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-	
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var batches []HoldingBatch
+	if err := json.Unmarshal(body, &batches); err != nil {
+		return nil, fmt.Errorf("解析持倉資料失敗: %v", err)
+	}
+	return batches, nil
+}
+
+// 從 TWSE 取得收盤價
+func getTWSEPrice(code string) (float64, error) {
+	dateStr := time.Now().Format("20060102")
+	url := fmt.Sprintf(
+		"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date=%s&stockNo=%s",
+		dateStr, code,
+	)
+
+	client := &http.Client{Timeout: 15 * time.Second}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("User-Agent", "Mozilla/5.0")
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return 0, err
 	}
 	defer resp.Body.Close()
-	
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return 0, err
-	}
-	
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
 	var twseResp TWSEResponse
 	if err := json.Unmarshal(body, &twseResp); err != nil {
 		return 0, err
 	}
-	
-	// 檢查回應狀態
-	if twseResp.Stat != "OK" {
-		return 0, fmt.Errorf("TWSE API 回應錯誤: %s", twseResp.Stat)
+	if twseResp.Stat != "OK" || len(twseResp.Data) == 0 {
+		return 0, fmt.Errorf("查無資料（休市或代號錯誤）")
 	}
-	
-	// 檢查是否有資料
-	if len(twseResp.Data) == 0 {
-		return 0, fmt.Errorf("查無股票代號 %s 的資料", code)
+
+	lastRow := twseResp.Data[len(twseResp.Data)-1]
+	if len(lastRow) < 7 {
+		return 0, fmt.Errorf("資料格式異常")
 	}
-	
-	// 取得最新一天的資料（陣列最後一筆）
-	lastData := twseResp.Data[len(twseResp.Data)-1]
-	
-	// 欄位順序：日期、成交股數、成交金額、開盤價、最高價、最低價、收盤價、漲跌價差、成交筆數
-	// 收盤價在 index 6
-	if len(lastData) < 7 {
-		return 0, fmt.Errorf("資料格式錯誤")
-	}
-	
-	closePrice := lastData[6]
-	closePrice = fmt.Sprintf("%s", closePrice) // 確保是字串
-	// 移除千分位逗號
-	for i := 0; i < len(closePrice); i++ {
-		if closePrice[i] == ',' {
-			closePrice = closePrice[:i] + closePrice[i+1:]
-			i--
-		}
-	}
-	
+
+	priceStr := strings.ReplaceAll(lastRow[6], ",", "")
 	var price float64
-	_, err = fmt.Sscanf(closePrice, "%f", &price)
-	if err != nil {
-		return 0, fmt.Errorf("無法解析收盤價: %s", closePrice)
-	}
-	
+	fmt.Sscanf(priceStr, "%f", &price)
 	return price, nil
 }
 
 func main() {
-	fmt.Println("🦈 更新投資組合資料（使用 TWSE API）...")
-	
-	// 定義投資組合
-	holdings := []Stock{
-		{"2618", "長榮航", 1000, 33.70, 0, 0, 0, "RSI超賣20.6反彈機會"},
-		{"5876", "上海商銀", 1000, 39.15, 0, 0, 0, "RSI偏低35.8買點"},
-		{"1102", "亞泥", 1000, 34.75, 0, 0, 0, "穩健中性"},
-		{"2353", "宏碁", 1000, 27.90, 0, 0, 0, "評分68最高,價格突破均線"},
-		{"2851", "中再保", 1000, 28.85, 0, 0, 0, "評分62,上升趨勢"},
-		{"2838", "聯邦銀", 1000, 20.15, 0, 0, 0, "價格低20元,RSI中性"},
-		{"2812", "台中銀", 1000, 20.95, 0, 0, 0, "金融股穩健"},
-		{"2887", "台新金", 1000, 24.65, 0, 0, 0, "今日上漲1.23%"},
+	fmt.Println("🦈 更新投資組合資料（從 Trade API 讀取持倉）...")
+
+	// Step 1：從 Trade API 取得目前持倉
+	batches, err := getHoldingsFromAPI()
+	if err != nil {
+		fmt.Printf("⚠️  無法連線 Trade API: %v\n", err)
+		fmt.Println("   請先啟動 trade_manager：go build -o trade_manager trade_manager.go && ./trade_manager")
+		fmt.Println("   或使用 bash start_all.sh 一鍵啟動")
+		os.Exit(1)
 	}
-	
+
+	if len(batches) == 0 {
+		fmt.Println("📭 目前無持倉記錄，請先到網頁買入股票。")
+		os.Exit(0)
+	}
+
+	fmt.Printf("📋 讀取到 %d 筆持倉\n\n", len(batches))
+
+	// Step 2：查詢每支股票最新股價
+	var holdings []Stock
 	totalCost := 0.0
 	currentValue := 0.0
-	
-	// 查詢每支股票
-	for i, stock := range holdings {
-		price, err := getTWSEPrice(stock.Symbol)
+
+	for _, b := range batches {
+		price, err := getTWSEPrice(b.Symbol)
 		if err != nil {
-			fmt.Printf("⚠️  %s.TW 取得股價失敗: %v\n", stock.Symbol, err)
-			price = stock.BuyPrice // 使用成本價
+			fmt.Printf("⚠️  %s (%s) 取得股價失敗: %v，使用買入價\n", b.Symbol, b.Name, err)
+			price = b.BuyPrice
 		}
-		
-		holdings[i].CurrentPrice = price
-		
-		// 計算損益
-		cost := stock.BuyPrice * float64(stock.Shares)
-		value := price * float64(stock.Shares)
-		pnl := value - cost
-		returnPct := (pnl / cost) * 100
-		
-		holdings[i].ProfitLoss = pnl
-		holdings[i].ReturnPct = returnPct
-		
+
+		cost := b.BuyPrice * float64(b.Shares)
+		val := price * float64(b.Shares)
+		pnl := val - cost
+		ret := 0.0
+		if cost > 0 {
+			ret = pnl / cost * 100
+		}
+
+		holdings = append(holdings, Stock{
+			Symbol:       b.Symbol,
+			Name:         b.Name,
+			Shares:       b.Shares,
+			BuyPrice:     b.BuyPrice,
+			CurrentPrice: price,
+			ProfitLoss:   pnl,
+			ReturnPct:    ret,
+			Reason:       b.Reason,
+		})
+
 		totalCost += cost
-		currentValue += value
-		
-		fmt.Printf("✅ %s (%s) - 現價: %.2f, 損益: %+.0f (%.2f%%)\n",
-			stock.Symbol, stock.Name, price, pnl, returnPct)
-		
-		time.Sleep(500 * time.Millisecond) // 避免被限流
+		currentValue += val
+
+		sign := "+"
+		if pnl < 0 {
+			sign = ""
+		}
+		fmt.Printf("✅ %s (%s) %d股 | 買入 %.2f → 現價 %.2f | 損益 %s%.0f (%.2f%%)\n",
+			b.Symbol, b.Name, b.Shares, b.BuyPrice, price, sign, pnl, ret)
+
+		time.Sleep(500 * time.Millisecond)
 	}
-	
+
+	// Step 3：儲存到 html/portfolio.json
 	totalPnL := currentValue - totalCost
-	totalReturn := (totalPnL / totalCost) * 100
-	
-	fmt.Printf("\n📊 總成本: %.0f | 市值: %.0f | 損益: %+.0f (%.2f%%)\n\n",
-		totalCost, currentValue, totalPnL, totalReturn)
-	
-	// 產生 JSON
+	totalReturn := 0.0
+	if totalCost > 0 {
+		totalReturn = totalPnL / totalCost * 100
+	}
+
 	portfolio := Portfolio{
 		Holdings:     holdings,
 		TotalCost:    totalCost,
@@ -175,17 +193,22 @@ func main() {
 		TotalReturn:  totalReturn,
 		LastUpdate:   time.Now().Format("2006-01-02 15:04:05"),
 	}
-	
-	// 儲存檔案
-	homeDir, _ := os.UserHomeDir()
-	outputPath := filepath.Join(homeDir, "html", "portfolio.json")
-	
+
+	wd, _ := os.Getwd()
+	outputPath := filepath.Join(wd, "html", "portfolio.json")
+	os.MkdirAll(filepath.Join(wd, "html"), 0755)
+
 	jsonData, _ := json.MarshalIndent(portfolio, "", "  ")
 	if err := ioutil.WriteFile(outputPath, jsonData, 0644); err != nil {
 		fmt.Printf("❌ 儲存失敗: %v\n", err)
-		return
+		os.Exit(1)
 	}
-	
-	fmt.Printf("✅ 資料已儲存至 html/portfolio.json\n")
-	fmt.Printf("🌐 開啟 http://localhost:8081 即可查看網頁！\n")
+
+	sign := "+"
+	if totalPnL < 0 {
+		sign = ""
+	}
+	fmt.Printf("\n📊 總成本: %.0f | 市值: %.0f | 損益: %s%.0f (%.2f%%)\n",
+		totalCost, currentValue, sign, totalPnL, totalReturn)
+	fmt.Printf("✅ 已更新 %d 支股票，儲存至 html/portfolio.json\n", len(holdings))
 }

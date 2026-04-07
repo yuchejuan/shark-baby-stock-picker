@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -181,7 +182,9 @@ func main() {
 	}
 	
 	// 儲存 JSON
-	outputPath := "stock_web/sector_heatmap_twse_full.json"
+	wd, _ := os.Getwd()
+	os.MkdirAll(filepath.Join(wd, "html"), 0755)
+	outputPath := filepath.Join(wd, "html", "sector_heatmap.json")
 	jsonData, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		fmt.Printf("❌ JSON 編碼失敗: %v\n", err)
@@ -211,27 +214,26 @@ func main() {
 	fmt.Println("🦈 TWSE 完整版測試完成")
 }
 
+// 動態讀取所有類別（不受 stock_pool.json 類別增減影響）
+type CategoryJSON struct {
+	Name  string            `json:"name"`
+	Count int               `json:"count"`
+	List  map[string]string `json:"list"`
+}
+
 type StockPoolJSON struct {
 	ETF struct {
 		List map[string]string `json:"list"`
 	} `json:"etf"`
 	Stocks struct {
-		Categories struct {
-			Finance       struct{ List map[string]string `json:"list"` } `json:"finance"`
-			BlueChip      struct{ List map[string]string `json:"list"` } `json:"blue_chip"`
-			Electronics   struct{ List map[string]string `json:"list"` } `json:"electronics"`
-			Traditional   struct{ List map[string]string `json:"list"` } `json:"traditional"`
-			MidSmallCap   struct{ List map[string]string `json:"list"` } `json:"mid_small_cap"`
-			AITech        struct{ List map[string]string `json:"list"` } `json:"ai_tech"`
-			PowerUtility  struct{ List map[string]string `json:"list"` } `json:"power_utility"`
-			Telecom       struct{ List map[string]string `json:"list"` } `json:"telecom"`
-			Others        struct{ List map[string]string `json:"list"` } `json:"others"`
-		} `json:"categories"`
+		Categories map[string]CategoryJSON `json:"categories"`
 	} `json:"stocks"`
 }
 
 func loadStockPool() (*StockPool, error) {
-	data, err := os.ReadFile("stock_pool.json")
+	// 確保讀取的是執行目錄的 stock_pool.json（不依賴工作目錄）
+	wd, _ := os.Getwd()
+	data, err := os.ReadFile(filepath.Join(wd, "stock_pool.json"))
 	if err != nil {
 		return nil, err
 	}
@@ -250,24 +252,10 @@ func loadStockPool() (*StockPool, error) {
 	}
 	
 	// 個股
-	categories := []struct {
-		list map[string]string
-		name string
-	}{
-		{poolJSON.Stocks.Categories.Finance.List, "金融"},
-		{poolJSON.Stocks.Categories.BlueChip.List, "權值股"},
-		{poolJSON.Stocks.Categories.Electronics.List, "電子"},
-		{poolJSON.Stocks.Categories.Traditional.List, "傳產"},
-		{poolJSON.Stocks.Categories.MidSmallCap.List, "中小型"},
-		{poolJSON.Stocks.Categories.AITech.List, "AI相關"},
-		{poolJSON.Stocks.Categories.PowerUtility.List, "電力"},
-		{poolJSON.Stocks.Categories.Telecom.List, "通訊"},
-		{poolJSON.Stocks.Categories.Others.List, "其他"},
-	}
-	
-	for _, cat := range categories {
-		for code, name := range cat.list {
-			pool.Stocks = append(pool.Stocks, Stock{code, name, cat.name})
+	// 動態讀取所有類別（自動涵蓋新增的類別）
+	for _, cat := range poolJSON.Stocks.Categories {
+		for code, name := range cat.List {
+			pool.Stocks = append(pool.Stocks, Stock{code, name, cat.Name})
 		}
 	}
 	

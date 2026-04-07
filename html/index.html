@@ -798,46 +798,64 @@
 
         async function searchStockFromAPI(symbol) {
             const contentDiv = document.getElementById('search-result-content');
+
+            // Step 1：先確認查詢 API 是否在線
+            let apiOnline = false;
+            try {
+                const health = await fetch(`${CONFIG.QUERY_API.replace('/api','')}/health`,
+                    { signal: AbortSignal.timeout(2000) });
+                apiOnline = health.ok;
+            } catch(e) { apiOnline = false; }
+
+            if (!apiOnline) {
+                contentDiv.innerHTML = `
+                    <div style="background:#f8d7da;padding:25px;border-radius:10px;border-left:4px solid #dc3545;">
+                        <h3 style="color:#842029;margin-bottom:10px;">❌ 查詢 API 未啟動（Port 8765）</h3>
+                        <p style="color:#842029;margin-bottom:15px;">請在終端機執行以下指令後重新查詢：</p>
+                        <code style="display:block;background:#fff;padding:12px;border-radius:6px;color:#d63384;font-family:monospace;">
+                            bash start_all.sh
+                        </code>
+                        <p style="color:#842029;font-size:0.85em;margin-top:10px;">
+                            或單獨啟動查詢服務：<br>
+                            <code style="color:#d63384;">go build -o stock_query_server stock_query_api.go &amp;&amp; ./stock_query_server</code>
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Step 2：API 在線，開始查詢（TWSE 需要時間，等待最多 60 秒）
             contentDiv.innerHTML = `
                 <div style="text-align:center;padding:30px;">
-                    <div style="font-size:2em;margin-bottom:15px;">🔍</div>
+                    <div class="spinner" style="margin:0 auto 20px;"></div>
                     <h3 style="color:#667eea;margin-bottom:10px;">正在查詢 ${symbol}...</h3>
-                    <p style="color:#888;">此股票不在熱門股清單，正在從 TWSE 即時查詢</p>
-                    <div style="margin-top:20px;"><div class="spinner" style="margin:0 auto;"></div></div>
+                    <p style="color:#888;">從台灣證交所（TWSE）抓取即時資料，約需 10~30 秒</p>
+                    <p style="color:#aaa;font-size:0.85em;margin-top:8px;">⏱️ 請耐心等待...</p>
                 </div>
             `;
 
             try {
-                const response = await fetch(`${CONFIG.QUERY_API}/query?symbol=${symbol}`);
-                const data     = await response.json();
+                const response = await fetch(
+                    `${CONFIG.QUERY_API}/query?symbol=${symbol}`,
+                    { signal: AbortSignal.timeout(60000) }  // 60 秒 timeout
+                );
+                const data = await response.json();
                 if (data.error) throw new Error(data.error);
                 displayStockAnalysis(data);
             } catch (error) {
+                const isTimeout = error.name === 'TimeoutError' || error.name === 'AbortError';
                 contentDiv.innerHTML = `
                     <div style="background:#fff3cd;padding:25px;border-radius:10px;border-left:4px solid #ffc107;">
-                        <h3 style="color:#856404;margin-bottom:15px;">💡 此股票不在熱門股清單內</h3>
-                        <p style="color:#856404;margin-bottom:20px;">但你可以使用以下命令進行完整技術分析：</p>
-                        <div style="background:white;padding:15px;border-radius:8px;border:1px solid #ffc107;margin-bottom:15px;">
-                            <div style="color:#856404;font-size:0.9em;margin-bottom:8px;"><strong>⚡ 方法一：終端機查詢</strong></div>
-                            <code style="display:block;background:#f8f9fa;padding:12px;border-radius:6px;color:#d63384;font-family:monospace;">
-                                cd ~/.openclaw/workspace && go run stock_query_service.go ${symbol}
-                            </code>
-                        </div>
-                        <div style="background:white;padding:15px;border-radius:8px;border:1px solid #ffc107;">
-                            <div style="color:#856404;font-size:0.9em;margin-bottom:8px;"><strong>🚀 方法二：啟動 API 服務</strong></div>
-                            <code style="display:block;background:#f8f9fa;padding:12px;border-radius:6px;color:#d63384;font-family:monospace;margin-bottom:8px;">
-                                cd ~/.openclaw/workspace && go run stock_query_api.go &
-                            </code>
-                            <p style="color:#856404;font-size:0.85em;margin:0;">→ 然後重新查詢即可自動化查詢任意股票</p>
-                        </div>
-                        <div style="margin-top:20px;padding:15px;background:#e7f3ff;border-radius:8px;">
-                            <strong style="color:#0056b3;">📊 支援功能：</strong>
-                            <ul style="margin:10px 0 0 20px;color:#0056b3;line-height:1.8;">
-                                <li>完整 K 線數據（最近 60 天）</li>
-                                <li>RSI / MACD / KD 技術指標</li>
-                                <li>本益比 / 殖利率 / 股價淨值比</li>
-                                <li>與 TOP 選股一致的評分邏輯</li>
-                            </ul>
+                        <h3 style="color:#856404;margin-bottom:10px;">
+                            ${isTimeout ? '⏱️ 查詢逾時' : '❌ 查詢失敗'}
+                        </h3>
+                        <p style="color:#856404;margin-bottom:15px;">
+                            ${isTimeout
+                                ? '超過 60 秒未回應，可能是 TWSE 伺服器繁忙，請稍後再試。'
+                                : '錯誤：' + error.message}
+                        </p>
+                        <div style="background:white;padding:12px;border-radius:8px;font-size:0.9em;color:#666;">
+                            <strong>💡 提示：</strong>非交易時段（09:00 前 / 14:30 後）TWSE 可能無即時資料
                         </div>
                     </div>
                 `;
@@ -998,12 +1016,21 @@
         }
 
         function getMADescription(trend, ma5, ma20, ma60) {
-            if (trend === '多頭') return ma5 > ma20 && ma20 > ma60 ? '🟢 完美多頭排列（MA5 > MA20 > MA60）' : '🟢 多頭趨勢';
-            if (trend === '空頭') return ma60 > ma20 && ma20 > ma5 ? '🔴 完美空頭排列（MA60 > MA20 > MA5）' : '🔴 空頭趨勢';
+            const hasMA60 = ma60 && ma60 > 0;
+            if (trend === '多頭') {
+                if (hasMA60 && ma5 > ma20 && ma20 > ma60) return '🟢 完美多頭排列（MA5 > MA20 > MA60）';
+                if (!hasMA60) return '🟢 多頭趨勢（MA60 資料不足，以 MA5 > MA20 判斷）';
+                return '🟢 多頭趨勢';
+            }
+            if (trend === '空頭') {
+                if (hasMA60 && ma60 > ma20 && ma20 > ma5) return '🔴 完美空頭排列（MA60 > MA20 > MA5）';
+                return '🔴 空頭趨勢';
+            }
             return '⚪ 中性，無明確趨勢';
         }
 
         function getPriceVsMA(price, ma) {
+            if (!ma || ma === 0) return '<span style="color:#aaa;">資料不足</span>';
             const diff = ((price - ma) / ma * 100).toFixed(2);
             return diff > 0
                 ? `<span class="positive">+${diff}%</span>`
@@ -1011,9 +1038,11 @@
         }
 
         function getPricePositionDescription(price, ma20, ma60) {
-            if (price > ma20 && price > ma60) return '🟢 價格站上月線與季線，強勢';
-            if (price > ma20)                 return '🟡 價格站上月線，季線之上';
-            if (price < ma60)                 return '🔴 價格跌破季線，弱勢';
+            const hasMA60 = ma60 && ma60 > 0;
+            if (hasMA60 && price > ma20 && price > ma60) return '🟢 價格站上月線與季線，強勢';
+            if (price > ma20 && !hasMA60) return '🟡 價格站上月線（季線資料不足）';
+            if (price > ma20)             return '🟡 價格站上月線';
+            if (hasMA60 && price < ma60)  return '🔴 價格跌破季線，弱勢';
             return '⚪ 價格在均線間波動';
         }
 

@@ -1,33 +1,16 @@
 #!/bin/bash
 
-echo "🦈 鯊魚寶寶選股系統 - 啟動中..."
-echo ""
-
-# 1. 更新投資組合資料
-echo "📊 正在更新投資組合資料..."
-cd /home/administrator/.openclaw/workspace
-go run web_updater.go
-
-echo ""
-echo "✅ 資料更新完成！"
-echo ""
-
-# 2. 啟動網頁伺服器
-echo "🌐 啟動網頁伺服器..."
-cd html
+cd "$(dirname "$0")"
 
 PORT=8080
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  🦈 鯊魚寶寶選股系統已啟動！"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "  📱 開啟瀏覽器訪問:"
-echo "     http://localhost:$PORT"
-echo ""
-echo "  🛑 停止伺服器: 按 Ctrl+C"
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
+while lsof -i :$PORT > /dev/null 2>&1; do
+    echo "⚠️  Port $PORT 已被佔用，嘗試 $((PORT+1))..."
+    PORT=$((PORT+1))
+done
 
+echo "🌐 啟動網頁伺服器 (Port $PORT)..."
+echo "  開啟瀏覽器訪問：http://localhost:$PORT"
+echo "  停止：Ctrl+C"
+echo ""
+cd html
 python3 -m http.server $PORT

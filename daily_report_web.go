@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -531,7 +532,9 @@ func TestWebReport() {
 	
 	// 儲存報告
 	report, _ := GenerateWebReport([]WebStockPick{webPick}, nil)
-	filename := "/home/administrator/.openclaw/workspace/html/daily_report.json"
+	wd, _ := os.Getwd()
+	filename := filepath.Join(wd, "html", "daily_report.json")
+	os.MkdirAll(filepath.Join(wd, "html"), 0755)
 	err = SaveWebReport(report, filename)
 	if err != nil {
 		fmt.Printf("\n❌ 儲存失敗: %v\n", err)

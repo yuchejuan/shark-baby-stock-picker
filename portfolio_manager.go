@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -40,7 +41,13 @@ type BuyRequest struct {
 	Reason string  `json:"reason"`
 }
 
-const portfolioFile = "stock_web/portfolio.json"
+var portfolioFile string
+
+func init() {
+	wd, _ := os.Getwd()
+	portfolioFile = wd + "/html/portfolio.json"
+	os.MkdirAll(wd+"/html", 0755)
+}
 
 // 讀取投資組合
 func loadPortfolio() (*Portfolio, error) {

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path/filepath"
+	"os"
 	"log"
 	"net/http"
 	"regexp"
@@ -263,7 +265,9 @@ func main() {
 	}
 	
 	// 輸出 JSON
-	outputFile := "stock_web/dividend_data.json"
+	wd, _ := os.Getwd()
+	os.MkdirAll(filepath.Join(wd, "html"), 0755)
+	outputFile := filepath.Join(wd, "html", "dividend_data.json")
 	jsonData, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
 		log.Fatalf("❌ JSON 編碼失敗: %v\n", err)
