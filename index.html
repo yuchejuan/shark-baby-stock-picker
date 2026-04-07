@@ -11,19 +11,19 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
             color: #333;
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
-        
+
         .header {
             background: white;
             border-radius: 15px;
@@ -32,21 +32,23 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
         }
-        
+
         .header h1 {
             color: #667eea;
             font-size: 2.5em;
             margin-bottom: 10px;
         }
-        
+
         .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap; /* [FIX #9] 行動裝置換行 */
         }
-        
+
         .tab-button {
             flex: 1;
+            min-width: 120px; /* [FIX #9] 行動裝置最小寬度 */
             background: white;
             border: none;
             padding: 15px 30px;
@@ -57,61 +59,63 @@
             transition: all 0.3s;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-        
+
         .tab-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        
+
         .tab-button.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-        
+
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         .card {
             background: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow-x: auto; /* [FIX #9] 行動裝置表格橫向捲動 */
         }
-        
+
         .card h2 {
             color: #667eea;
             margin-bottom: 20px;
             font-size: 1.5em;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            min-width: 600px; /* [FIX #9] 確保表格不會壓縮過頭 */
         }
-        
+
         th, td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-        
+
         th {
             background: #f8f9fa;
             font-weight: bold;
             color: #555;
         }
-        
+
         tr:hover {
             background: #f8f9fa;
         }
-        
+
         .btn {
             padding: 10px 20px;
             border: none;
@@ -121,77 +125,77 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .btn-buy {
             background: #27ae60;
             color: white;
         }
-        
+
         .btn-buy:hover {
             background: #229954;
         }
-        
+
         .btn-sell {
             background: #e74c3c;
             color: white;
         }
-        
+
         .btn-sell:hover {
             background: #c0392b;
         }
-        
+
         .btn-export {
             background: #3498db;
             color: white;
         }
-        
+
         .btn-export:hover {
             background: #2980b9;
         }
-        
+
         .btn-primary {
             background: #667eea;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #5568d3;
         }
-        
+
         .btn-primary:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
-        
+
         .positive {
             color: #27ae60;
             font-weight: bold;
         }
-        
+
         .negative {
             color: #e74c3c;
             font-weight: bold;
         }
-        
+
         .score-badge {
             padding: 5px 10px;
             border-radius: 5px;
             color: white;
             font-weight: bold;
         }
-        
+
         .score-high {
             background: #27ae60;
         }
-        
+
         .score-medium {
             background: #f39c12;
         }
-        
+
         .score-low {
             background: #e74c3c;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -202,7 +206,7 @@
             background: rgba(0,0,0,0.5);
             z-index: 1000;
         }
-        
+
         .modal-content {
             background: white;
             margin: 10% auto;
@@ -211,23 +215,23 @@
             max-width: 500px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        
+
         .modal-content h3 {
             color: #667eea;
             margin-bottom: 20px;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .form-group label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
             color: #555;
         }
-        
+
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -237,13 +241,13 @@
             font-size: 1em;
             font-family: inherit;
         }
-        
+
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -252,18 +256,18 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .modal-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
+
         .badge-buy {
             background: #27ae60;
             color: white;
@@ -271,13 +275,38 @@
             border-radius: 5px;
             font-size: 0.85em;
         }
-        
+
         .badge-sell {
             background: #e74c3c;
             color: white;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 0.85em;
+        }
+
+        /* [FIX #3] 新增 badge-neutral 樣式 */
+        .badge-neutral {
+            background: #95a5a6;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+
+        /* [FIX #8] 錯誤訊息區塊樣式 */
+        .error-message {
+            text-align: center;
+            padding: 30px;
+            color: #e74c3c;
+        }
+
+        .error-message h3 {
+            margin-bottom: 10px;
+        }
+
+        /* 賣出 Modal */
+        .modal-content h3.sell-title {
+            color: #e74c3c;
         }
     </style>
 </head>
@@ -287,38 +316,39 @@
             <h1>🦈 鯊魚寶寶選股系統</h1>
             <div>Rick 的投資模擬練習 | 2029 退休計畫</div>
         </div>
-        
+
+        <!-- [FIX #1] switchTab 改成傳入 this，避免隱式 event 全域變數 -->
         <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('picks')">📊 TOP 選股</button>
-            <button class="tab-button" onclick="switchTab('sectors')">🔥 產業熱度</button>
-            <button class="tab-button" onclick="switchTab('portfolio')">💼 持倉明細</button>
-            <button class="tab-button" onclick="switchTab('history')">📜 歷次買賣</button>
+            <button class="tab-button active" onclick="switchTab('picks', this)">📊 TOP 選股</button>
+            <button class="tab-button" onclick="switchTab('sectors', this)">🔥 產業熱度</button>
+            <button class="tab-button" onclick="switchTab('portfolio', this)">💼 持倉明細</button>
+            <button class="tab-button" onclick="switchTab('history', this)">📜 歷次買賣</button>
             <button class="tab-button" onclick="window.open('dividend_tracker.html', '_blank')" style="background:#17a2b8;">
                 🎯 高股息追蹤
             </button>
         </div>
-        
+
         <!-- 頁面一：TOP 選股 -->
         <div id="picks" class="tab-content active">
             <!-- 股票查詢區 -->
             <div class="card" style="margin-bottom:20px;">
                 <h2>🔍 股票查詢</h2>
                 <p style="color:#666;margin-bottom:15px;">輸入股票代號（例如：2330、2353）查詢即時價格與技術指標</p>
-                <div style="display:flex;gap:10px;align-items:center;margin-bottom:15px;">
-                    <input type="text" id="search-symbol" placeholder="輸入股票代號（例如：2330）" 
-                           style="flex:1;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em;">
+                <div style="display:flex;gap:10px;align-items:center;margin-bottom:15px;flex-wrap:wrap;">
+                    <input type="text" id="search-symbol" placeholder="輸入股票代號（例如：2330）"
+                           style="flex:1;min-width:200px;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em;">
                     <button onclick="searchStock()" class="btn" style="padding:12px 30px;">
                         🔍 查詢
                     </button>
                 </div>
-                
+
                 <!-- 查詢結果 -->
                 <div id="search-result" style="display:none;margin-top:20px;">
                     <h3 style="color:#667eea;margin-bottom:15px;">📊 技術分析結果</h3>
                     <div id="search-result-content"></div>
                 </div>
             </div>
-            
+
             <!-- TOP 推薦區 -->
             <div class="card">
                 <h2>🏆 今日 TOP 推薦</h2>
@@ -341,25 +371,25 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- 頁面二：產業熱度 -->
         <div id="sectors" class="tab-content">
             <div class="card">
                 <h2>🔥 產業熱度分析</h2>
-                <div style="display:flex;gap:15px;margin-bottom:20px;padding:15px;background:#f8f9fa;border-radius:10px;">
-                    <div style="flex:1;">
+                <div style="display:flex;gap:15px;margin-bottom:20px;padding:15px;background:#f8f9fa;border-radius:10px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:120px;">
                         <div style="color:#666;margin-bottom:5px;">分析時間</div>
                         <div style="font-size:1.1em;font-weight:bold;" id="sector-update-time">載入中...</div>
                     </div>
-                    <div style="flex:1;">
+                    <div style="flex:1;min-width:120px;">
                         <div style="color:#666;margin-bottom:5px;">產業數量</div>
                         <div style="font-size:1.1em;font-weight:bold;" id="sector-count">-</div>
                     </div>
-                    <div style="flex:1;">
+                    <div style="flex:1;min-width:120px;">
                         <div style="color:#666;margin-bottom:5px;">涵蓋股票</div>
                         <div style="font-size:1.1em;font-weight:bold;" id="sector-stock-count">-</div>
                     </div>
-                    <div style="flex:1;">
+                    <div style="flex:1;min-width:120px;">
                         <div style="color:#666;margin-bottom:5px;">市場狀態</div>
                         <div style="font-size:1.1em;font-weight:bold;" id="market-status">-</div>
                     </div>
@@ -433,13 +463,13 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- 頁面三：持倉明細 -->
         <div id="portfolio" class="tab-content">
             <div class="card">
                 <h2>💼 持倉明細</h2>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                    <div style="display:flex;gap:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;">
                         <div>總成本: <strong id="total-cost">$0</strong></div>
                         <div>目前市值: <strong id="total-value">$0</strong></div>
                         <div>總損益: <strong id="total-pnl">$0</strong></div>
@@ -471,8 +501,8 @@
                 </table>
             </div>
         </div>
-        
-        <!-- 頁面三：歷次買賣 -->
+
+        <!-- 頁面四：歷次買賣 -->
         <div id="history" class="tab-content">
             <div class="card">
                 <h2>📜 歷次買賣記錄</h2>
@@ -502,7 +532,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- 買入彈窗 -->
     <div id="buy-modal" class="modal">
         <div class="modal-content">
@@ -538,52 +568,129 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- [FIX #10] 賣出彈窗（取代原本 prompt()） -->
+    <div id="sell-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="sell-title">📉 模擬賣出</h3>
+            <div class="form-group">
+                <label>股票</label>
+                <input type="text" id="sell-stock-info" readonly>
+            </div>
+            <div class="form-group">
+                <label>賣出股數 * <span id="sell-max-hint" style="color:#888;font-weight:normal;"></span></label>
+                <input type="number" id="sell-shares" min="1" oninput="updateSellAmountFromModal()">
+            </div>
+            <div style="background:#f8f9fa;padding:15px;border-radius:8px;margin:15px 0;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                    <span style="color:#666;">賣出金額：</span>
+                    <strong style="color:#e74c3c;font-size:1.2em;" id="sell-amount-display">$0</strong>
+                </div>
+                <div style="color:#888;font-size:0.9em;">
+                    * 模擬交易，無手續費與稅金
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="confirmSell()" class="btn btn-sell" style="flex:1;">確認賣出</button>
+                <button onclick="closeSellModal()" class="btn" style="flex:1;background:#95a5a6;color:white;">取消</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const API_BASE = 'http://localhost:8888/api';
-        let currentBuyData = null;
-        
-        // 分頁切換
-        function switchTab(tabName) {
+        // [FIX #6] 統一 API 設定，不再散落各處
+        const CONFIG = {
+            TRADE_API:  'http://localhost:8888/api',
+            QUERY_API:  'http://localhost:8765/api'
+        };
+
+        let currentBuyData  = null;
+        let currentSellData = null;
+
+        // ==================== 分頁切換 ====================
+
+        // [FIX #1] 接受 btn 參數，移除對隱式 event 全域變數的依賴
+        // [FIX #2] 產業熱度載入整合進來，不再用 window.switchTab 覆寫
+        function switchTab(tabName, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
-            
+
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (tabName === 'picks') loadPicks();
+            if (btn) btn.classList.add('active');
+
+            if (tabName === 'picks')    loadPicks();
+            if (tabName === 'sectors')  loadSectorHeatmap();
             if (tabName === 'portfolio') loadPortfolio();
-            if (tabName === 'history') loadHistory();
+            if (tabName === 'history')  loadHistory();
         }
-        
-        // 載入 TOP 選股
+
+        // ==================== FIFO 共用函式 ====================
+
+        // [FIX #5] 抽出 FIFO 邏輯，loadHistory 與 exportCSV 共用，避免重複
+        function buildFIFOMap(trades) {
+            const buyMap = {};
+            trades.forEach(t => {
+                if (t.type === 'buy') {
+                    if (!buyMap[t.symbol]) buyMap[t.symbol] = [];
+                    buyMap[t.symbol].push({
+                        date: t.date,
+                        price: t.price,
+                        shares: t.shares,
+                        remainingShares: t.shares
+                    });
+                }
+            });
+            return buyMap;
+        }
+
+        function calcSellPnL(buyMap, symbol, sellShares, sellDate, sellPrice) {
+            const buys = buyMap[symbol] || [];
+            let remaining = sellShares;
+            let totalCost = 0;
+            let firstBuyDate = null;
+
+            for (const buy of buys) {
+                if (remaining <= 0) break;
+                if (buy.remainingShares <= 0) continue;
+                if (!firstBuyDate) firstBuyDate = new Date(buy.date);
+                const used = Math.min(remaining, buy.remainingShares);
+                totalCost += used * buy.price;
+                buy.remainingShares -= used;
+                remaining -= used;
+            }
+
+            if (!firstBuyDate) return { buyDate: null, daysHeld: null, profit: null };
+
+            const sellDateObj = new Date(sellDate);
+            const daysHeld   = Math.floor((sellDateObj - firstBuyDate) / (1000 * 60 * 60 * 24));
+            const profit      = (sellShares * sellPrice) - totalCost;
+            return { buyDate: firstBuyDate, daysHeld, profit };
+        }
+
+        // ==================== TOP 選股 ====================
+
         async function loadPicks() {
+            const tbody = document.getElementById('picks-body');
             try {
                 const response = await fetch('daily_report.json');
-                const data = await response.json();
-                
+                const data     = await response.json();
+
                 let allPicks = [];
-                
-                // 新版格式（all_picks）
                 if (data.all_picks) {
                     allPicks = data.all_picks;
-                } 
-                // 舊版格式（picks_20_30 等）- 向下相容
-                else {
-                    if (data.picks_20_30) allPicks = allPicks.concat(data.picks_20_30);
-                    if (data.picks_30_40) allPicks = allPicks.concat(data.picks_30_40);
-                    if (data.picks_40_50) allPicks = allPicks.concat(data.picks_40_50);
-                    if (data.picks_50_60) allPicks = allPicks.concat(data.picks_50_60);
+                } else {
+                    // 向下相容舊版格式
+                    ['picks_20_30','picks_30_40','picks_40_50','picks_50_60'].forEach(key => {
+                        if (data[key]) allPicks = allPicks.concat(data[key]);
+                    });
                 }
-                
+
                 allPicks.sort((a, b) => b.score - a.score);
                 const top10 = allPicks.slice(0, 10);
-                
-                const tbody = document.getElementById('picks-body');
+
                 tbody.innerHTML = top10.map((stock, index) => {
-                    const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                    const rankEmoji  = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
                     const scoreClass = stock.score >= 75 ? 'score-high' : stock.score >= 65 ? 'score-medium' : 'score-low';
-                    
                     return `
                         <tr>
                             <td><strong>${rankEmoji}</strong></td>
@@ -593,7 +700,7 @@
                             <td><span class="score-badge ${scoreClass}">${stock.score}</span></td>
                             <td style="font-size:0.9em;">${stock.advantage}</td>
                             <td>
-                                <button onclick="showBuyModal('${stock.symbol}', '${stock.name}', ${stock.price}, '${stock.advantage}')" 
+                                <button onclick="showBuyModal('${stock.symbol}', '${stock.name}', ${stock.price}, '${stock.advantage}')"
                                         class="btn btn-buy">
                                     📈 買入
                                 </button>
@@ -602,166 +709,120 @@
                     `;
                 }).join('');
             } catch (error) {
-                console.error('載入選股失敗:', error);
+                // [FIX #8] 錯誤時顯示 UI，不再讓「載入中...」永遠停在那
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="error-message">
+                            <h3>❌ 載入失敗</h3>
+                            <p>${error.message}</p>
+                        </td>
+                    </tr>`;
             }
         }
-        
-        // 顯示買入彈窗
+
+        // ==================== 買入 Modal ====================
+
         function showBuyModal(symbol, name, price, reason) {
             currentBuyData = { symbol, name, price, reason };
-            
             document.getElementById('buy-stock-info').value = `${name} (${symbol}) @ $${price}`;
-            document.getElementById('buy-reason').value = reason;
-            document.getElementById('buy-note').value = '';
-            document.getElementById('buy-shares').value = 1000;
-            
+            document.getElementById('buy-reason').value     = reason;
+            document.getElementById('buy-note').value       = '';
+            document.getElementById('buy-shares').value     = 1000;
             updateBuyCostFromModal();
-            
             document.getElementById('buy-modal').style.display = 'block';
         }
-        
+
         function closeBuyModal() {
             document.getElementById('buy-modal').style.display = 'none';
         }
-        
-        // 更新買入成本（從模態框）
+
         function updateBuyCostFromModal() {
             if (!currentBuyData) return;
-            
             const shares = parseInt(document.getElementById('buy-shares').value) || 0;
-            const cost = currentBuyData.price * shares;
+            const cost   = currentBuyData.price * shares;
             document.getElementById('buy-cost-display').textContent = `$${cost.toLocaleString()}`;
         }
-        
-        // 確認買入（優化版）
+
         async function confirmBuy() {
-            if (!currentBuyData) {
-                alert('❌ 系統錯誤：無買入資料');
-                return;
-            }
-            
-            const shares = parseInt(document.getElementById('buy-shares').value);
+            if (!currentBuyData) { alert('❌ 系統錯誤：無買入資料'); return; }
+
+            const shares   = parseInt(document.getElementById('buy-shares').value);
             const userNote = document.getElementById('buy-note').value.trim();
-            
-            if (!shares || shares <= 0) {
-                alert('❌ 請輸入有效的股數（必須大於 0）');
-                return;
-            }
-            
+
+            if (!shares || shares <= 0) { alert('❌ 請輸入有效的股數（必須大於 0）'); return; }
+
             const totalCost = shares * currentBuyData.price;
-            
-            // 確認對話框
-            if (!confirm(
+            const msg =
                 `📊 確認買入資訊\n\n` +
                 `股票：${currentBuyData.name} (${currentBuyData.symbol})\n` +
                 `價格：$${currentBuyData.price.toFixed(2)}\n` +
                 `股數：${shares.toLocaleString()}\n` +
                 `總金額：$${totalCost.toLocaleString()}\n\n` +
                 `理由：${currentBuyData.reason}` +
-                (userNote ? `\n附註：${userNote}` : '')
-            )) {
-                return;
-            }
-            
+                (userNote ? `\n附註：${userNote}` : '');
+            if (!confirm(msg)) return;
+
             const fullNote = currentBuyData.reason + (userNote ? ` | 附註: ${userNote}` : '');
-            
             const trade = {
                 type: 'buy',
                 symbol: currentBuyData.symbol,
-                name: currentBuyData.name,
-                shares: shares,
-                price: currentBuyData.price,
-                date: new Date().toISOString(),
-                note: fullNote
+                name:   currentBuyData.name,
+                shares,
+                price:  currentBuyData.price,
+                date:   new Date().toISOString(),
+                note:   fullNote
             };
-            
+
             try {
-                const response = await fetch(`${API_BASE}/trade/add`, {
-                    method: 'POST',
+                const response = await fetch(`${CONFIG.TRADE_API}/trade/add`, {
+                    method:  'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(trade)
+                    body:    JSON.stringify(trade)
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`API 錯誤：${response.status} ${response.statusText}`);
-                }
-                
+                if (!response.ok) throw new Error(`API 錯誤：${response.status} ${response.statusText}`);
                 const result = await response.json();
-                
                 if (result.success) {
-                    alert(
-                        `✅ 買入成功！\n\n` +
-                        `${currentBuyData.name} (${currentBuyData.symbol})\n` +
-                        `股數：${shares.toLocaleString()}\n` +
-                        `價格：$${currentBuyData.price.toFixed(2)}\n` +
-                        `總金額：$${totalCost.toLocaleString()}`
-                    );
+                    alert(`✅ 買入成功！\n\n${currentBuyData.name} (${currentBuyData.symbol})\n股數：${shares.toLocaleString()}\n價格：$${currentBuyData.price.toFixed(2)}\n總金額：$${totalCost.toLocaleString()}`);
                     closeBuyModal();
-                    
-                    // 重新載入持倉與歷史
                     loadPortfolio();
                     loadHistory();
                 } else {
                     alert('❌ 買入失敗：' + (result.message || '未知錯誤'));
                 }
             } catch (error) {
-                console.error('買入錯誤:', error);
-                alert(
-                    '❌ 連線錯誤\n\n' +
-                    error.message + '\n\n' +
-                    '請確認：\n' +
-                    '1. API 伺服器（Port 8888）是否運行中\n' +
-                    '2. 網路連線是否正常'
-                );
+                alert(`❌ 連線錯誤\n\n${error.message}\n\n請確認：\n1. API 伺服器（Port 8888）是否運行中\n2. 網路連線是否正常`);
             }
         }
-        
-        // 從後端 API 查詢股票（支援任意代號）
+
+        // ==================== 股票查詢 ====================
+
         async function searchStockFromAPI(symbol) {
             const contentDiv = document.getElementById('search-result-content');
-            
             contentDiv.innerHTML = `
                 <div style="text-align:center;padding:30px;">
                     <div style="font-size:2em;margin-bottom:15px;">🔍</div>
                     <h3 style="color:#667eea;margin-bottom:10px;">正在查詢 ${symbol}...</h3>
                     <p style="color:#888;">此股票不在熱門股清單，正在從 TWSE 即時查詢</p>
-                    <div style="margin-top:20px;">
-                        <div class="spinner" style="margin:0 auto;"></div>
-                    </div>
+                    <div style="margin-top:20px;"><div class="spinner" style="margin:0 auto;"></div></div>
                 </div>
             `;
-            
+
             try {
-                // 嘗試連接 API 服務
-                const apiUrl = `http://localhost:8765/api/query?symbol=${symbol}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                // 顯示結果
+                const response = await fetch(`${CONFIG.QUERY_API}/query?symbol=${symbol}`);
+                const data     = await response.json();
+                if (data.error) throw new Error(data.error);
                 displayStockAnalysis(data);
-                
             } catch (error) {
-                // API 服務不可用，顯示手動查詢指引
                 contentDiv.innerHTML = `
                     <div style="background:#fff3cd;padding:25px;border-radius:10px;border-left:4px solid #ffc107;">
-                        <h3 style="color:#856404;margin-bottom:15px;">
-                            💡 此股票不在熱門股清單內
-                        </h3>
-                        <p style="color:#856404;margin-bottom:20px;">
-                            但你可以使用以下命令進行完整技術分析：
-                        </p>
-                        
+                        <h3 style="color:#856404;margin-bottom:15px;">💡 此股票不在熱門股清單內</h3>
+                        <p style="color:#856404;margin-bottom:20px;">但你可以使用以下命令進行完整技術分析：</p>
                         <div style="background:white;padding:15px;border-radius:8px;border:1px solid #ffc107;margin-bottom:15px;">
                             <div style="color:#856404;font-size:0.9em;margin-bottom:8px;"><strong>⚡ 方法一：終端機查詢</strong></div>
                             <code style="display:block;background:#f8f9fa;padding:12px;border-radius:6px;color:#d63384;font-family:monospace;">
                                 cd ~/.openclaw/workspace && go run stock_query_service.go ${symbol}
                             </code>
                         </div>
-                        
                         <div style="background:white;padding:15px;border-radius:8px;border:1px solid #ffc107;">
                             <div style="color:#856404;font-size:0.9em;margin-bottom:8px;"><strong>🚀 方法二：啟動 API 服務</strong></div>
                             <code style="display:block;background:#f8f9fa;padding:12px;border-radius:6px;color:#d63384;font-family:monospace;margin-bottom:8px;">
@@ -769,7 +830,6 @@
                             </code>
                             <p style="color:#856404;font-size:0.85em;margin:0;">→ 然後重新查詢即可自動化查詢任意股票</p>
                         </div>
-                        
                         <div style="margin-top:20px;padding:15px;background:#e7f3ff;border-radius:8px;">
                             <strong style="color:#0056b3;">📊 支援功能：</strong>
                             <ul style="margin:10px 0 0 20px;color:#0056b3;line-height:1.8;">
@@ -783,93 +843,63 @@
                 `;
             }
         }
-        
-        // 股票查詢功能
+
         async function searchStock() {
-            const symbol = document.getElementById('search-symbol').value.trim();
-            const resultDiv = document.getElementById('search-result');
+            const symbol     = document.getElementById('search-symbol').value.trim();
+            const resultDiv  = document.getElementById('search-result');
             const contentDiv = document.getElementById('search-result-content');
-            
-            if (!symbol) {
-                alert('❌ 請輸入股票代號');
-                return;
-            }
-            
-            // 顯示載入中
+
+            if (!symbol) { alert('❌ 請輸入股票代號'); return; }
+
             resultDiv.style.display = 'block';
-            contentDiv.innerHTML = '<p style="text-align:center;padding:20px;">🔄 查詢中...</p>';
-            
+            contentDiv.innerHTML    = '<p style="text-align:center;padding:20px;">🔄 查詢中...</p>';
+
             try {
-                // 從 daily_report.json 查詢
                 const response = await fetch('daily_report.json');
-                const data = await response.json();
-                
-                // 取得所有股票
+                const data     = await response.json();
+
                 let allStocks = [];
-                
-                // 新版格式
                 if (data.all_picks) {
                     allStocks = data.all_picks;
+                } else {
+                    ['picks_20_30','picks_30_40','picks_40_50','picks_50_60'].forEach(key => {
+                        if (data[key]) allStocks = allStocks.concat(data[key]);
+                    });
                 }
-                // 舊版格式（向下相容）
-                else {
-                    if (data.picks_20_30) allStocks = allStocks.concat(data.picks_20_30);
-                    if (data.picks_30_40) allStocks = allStocks.concat(data.picks_30_40);
-                    if (data.picks_40_50) allStocks = allStocks.concat(data.picks_40_50);
-                    if (data.picks_50_60) allStocks = allStocks.concat(data.picks_50_60);
-                }
-                
-                // 查詢股票
+
                 const stock = allStocks.find(s => s.symbol === symbol);
-                
                 if (!stock) {
-                    // 嘗試從後端 API 查詢（支援任意股票）
                     await searchStockFromAPI(symbol);
                     return;
                 }
-                
-                // 顯示技術分析結果
                 displayStockAnalysis(stock);
-                
             } catch (error) {
+                // [FIX #8] 查詢失敗顯示 UI
                 contentDiv.innerHTML = `
-                    <div style="text-align:center;padding:30px;color:#e74c3c;">
+                    <div class="error-message">
                         <h3>❌ 查詢失敗</h3>
                         <p>${error.message}</p>
-                    </div>
-                `;
+                    </div>`;
             }
         }
-        
-        // 顯示股票技術分析
+
+        // ==================== 股票技術分析顯示 ====================
+
         function displayStockAnalysis(stock) {
             const contentDiv = document.getElementById('search-result-content');
-            
-            // 評分顏色
-            const scoreClass = stock.score >= 80 ? 'positive' : 
-                             stock.score >= 70 ? 'positive' : 
-                             stock.score >= 60 ? 'badge-sell' : 'negative';
-            
-            // 訊號徽章
-            const signalBadge = stock.signal === '買點' ? 'badge-buy' : 
-                               stock.signal === '賣點' ? 'badge-sell' : 
-                               'badge-neutral';
-            
-            // 趨勢顏色
-            const macdClass = stock.macd === '多頭' ? 'positive' : 
-                            stock.macd === '空頭' ? 'negative' : '';
-            const kdClass = stock.kd === '超賣' ? 'positive' : 
-                          stock.kd === '超買' ? 'negative' : '';
-            const maTrendClass = stock.ma_trend === '多頭' ? 'positive' : 
-                               stock.ma_trend === '空頭' ? 'negative' : '';
-            
+
+            // [FIX #4] 修正重複條件：>= 80 用 score-high，>= 70 用 score-medium，其餘 score-low
+            const scoreClass  = stock.score >= 80 ? 'score-high' : stock.score >= 70 ? 'score-medium' : 'score-low';
+            const signalBadge = stock.signal === '買點' ? 'badge-buy' :
+                                stock.signal === '賣點' ? 'badge-sell' : 'badge-neutral'; // [FIX #3] badge-neutral 已定義
+            const macdClass   = stock.macd     === '多頭' ? 'positive' : stock.macd     === '空頭' ? 'negative' : '';
+            const kdClass     = stock.kd       === '超賣' ? 'positive' : stock.kd       === '超買' ? 'negative' : '';
+            const maTrendClass = stock.ma_trend === '多頭' ? 'positive' : stock.ma_trend === '空頭' ? 'negative' : '';
+
             contentDiv.innerHTML = `
                 <div style="background:#f8f9fa;padding:20px;border-radius:10px;">
-                    <!-- 基本資訊 -->
                     <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:2px solid #ddd;">
-                        <h2 style="color:#667eea;margin-bottom:10px;">
-                            ${stock.symbol} ${stock.name}
-                        </h2>
+                        <h2 style="color:#667eea;margin-bottom:10px;">${stock.symbol} ${stock.name}</h2>
                         <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:1.1em;">
                             <div>
                                 <span style="color:#888;">現價</span>
@@ -889,45 +919,24 @@
                             <span style="color:#555;">${stock.advantage}</span>
                         </div>
                     </div>
-                    
-                    <!-- 六大技術指標 -->
+
                     <h3 style="color:#667eea;margin-bottom:15px;">📊 六大技術指標分析</h3>
-                    
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;">
-                        <!-- 1. RSI -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">1️⃣ RSI（相對強弱）</h4>
-                            <div style="font-size:1.2em;margin:10px 0;">
-                                <strong style="color:#667eea;">${stock.rsi.toFixed(2)}</strong>
-                            </div>
-                            <div style="color:#666;font-size:0.9em;">
-                                ${getRSIDescription(stock.rsi)}
-                            </div>
+                            <div style="font-size:1.2em;margin:10px 0;"><strong style="color:#667eea;">${stock.rsi.toFixed(2)}</strong></div>
+                            <div style="color:#666;font-size:0.9em;">${getRSIDescription(stock.rsi)}</div>
                         </div>
-                        
-                        <!-- 2. MACD -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">2️⃣ MACD（趨勢方向）</h4>
-                            <div style="font-size:1.2em;margin:10px 0;">
-                                <strong class="${macdClass}">${stock.macd}</strong>
-                            </div>
-                            <div style="color:#666;font-size:0.9em;">
-                                ${getMACDDescription(stock.macd)}
-                            </div>
+                            <div style="font-size:1.2em;margin:10px 0;"><strong class="${macdClass}">${stock.macd}</strong></div>
+                            <div style="color:#666;font-size:0.9em;">${getMACDDescription(stock.macd)}</div>
                         </div>
-                        
-                        <!-- 3. KD -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">3️⃣ KD 指標（短線買賣）</h4>
-                            <div style="font-size:1.2em;margin:10px 0;">
-                                <strong class="${kdClass}">${stock.kd}</strong>
-                            </div>
-                            <div style="color:#666;font-size:0.9em;">
-                                ${getKDDescription(stock.kd)}
-                            </div>
+                            <div style="font-size:1.2em;margin:10px 0;"><strong class="${kdClass}">${stock.kd}</strong></div>
+                            <div style="color:#666;font-size:0.9em;">${getKDDescription(stock.kd)}</div>
                         </div>
-                        
-                        <!-- 4. 移動平均線 -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">4️⃣ 移動平均線（MA）</h4>
                             <div style="font-size:0.95em;margin:10px 0;">
@@ -935,15 +944,9 @@
                                 MA20: <strong>${stock.ma20.toFixed(2)}</strong><br>
                                 MA60: <strong>${stock.ma60.toFixed(2)}</strong>
                             </div>
-                            <div style="margin-top:10px;">
-                                <span class="${maTrendClass}" style="font-weight:bold;">${stock.ma_trend}</span>
-                            </div>
-                            <div style="color:#666;font-size:0.9em;margin-top:5px;">
-                                ${getMADescription(stock.ma_trend, stock.ma5, stock.ma20, stock.ma60)}
-                            </div>
+                            <div style="margin-top:10px;"><span class="${maTrendClass}" style="font-weight:bold;">${stock.ma_trend}</span></div>
+                            <div style="color:#666;font-size:0.9em;margin-top:5px;">${getMADescription(stock.ma_trend, stock.ma5, stock.ma20, stock.ma60)}</div>
                         </div>
-                        
-                        <!-- 5. 價格位置 -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">5️⃣ 價格位置</h4>
                             <div style="font-size:0.95em;margin:10px 0;">
@@ -951,177 +954,122 @@
                                 vs MA20: <strong>${getPriceVsMA(stock.price, stock.ma20)}</strong><br>
                                 vs MA60: <strong>${getPriceVsMA(stock.price, stock.ma60)}</strong>
                             </div>
-                            <div style="color:#666;font-size:0.9em;margin-top:5px;">
-                                ${getPricePositionDescription(stock.price, stock.ma20, stock.ma60)}
-                            </div>
+                            <div style="color:#666;font-size:0.9em;margin-top:5px;">${getPricePositionDescription(stock.price, stock.ma20, stock.ma60)}</div>
                         </div>
-                        
-                        <!-- 6. 綜合訊號 -->
                         <div style="background:white;padding:15px;border-radius:8px;border-left:4px solid #667eea;">
                             <h4 style="margin-bottom:10px;color:#667eea;">6️⃣ 綜合訊號</h4>
                             <div style="font-size:1.2em;margin:10px 0;">
                                 <span class="${signalBadge}" style="font-size:1.1em;">${stock.signal}</span>
                             </div>
-                            <div style="color:#666;font-size:0.9em;">
-                                ${getSignalDescription(stock.signal, stock.score)}
-                            </div>
+                            <div style="color:#666;font-size:0.9em;">${getSignalDescription(stock.signal, stock.score)}</div>
                         </div>
                     </div>
-                    
-                    <!-- 操作建議 -->
+
                     <div style="margin-top:20px;padding:15px;background:white;border-radius:8px;border:2px solid #667eea;">
                         <h4 style="color:#667eea;margin-bottom:10px;">💡 操作建議</h4>
-                        <div style="color:#555;line-height:1.8;">
-                            ${getActionAdvice(stock)}
-                        </div>
-                        <button onclick="openBuyModal('${stock.symbol}', '${stock.name}', ${stock.price}, '${stock.advantage}')" 
-                                class="btn" style="margin-top:15px;width:100%;">
+                        <div style="color:#555;line-height:1.8;">${getActionAdvice(stock)}</div>
+                        <button onclick="showBuyModal('${stock.symbol}', '${stock.name}', ${stock.price}, '${stock.advantage}')"
+                                class="btn btn-buy" style="margin-top:15px;width:100%;">
                             📈 模擬買入
                         </button>
                     </div>
                 </div>
             `;
         }
-        
-        // RSI 描述
+
         function getRSIDescription(rsi) {
-            if (rsi < 30) return '🟢 <strong>超賣</strong> - 嚴重低估，可能反彈';
-            if (rsi < 40) return '🟡 <strong>偏低</strong> - 可能有反彈機會';
+            if (rsi < 30)  return '🟢 <strong>超賣</strong> - 嚴重低估，可能反彈';
+            if (rsi < 40)  return '🟡 <strong>偏低</strong> - 可能有反彈機會';
             if (rsi <= 60) return '⚪ <strong>中性</strong> - 正常波動區間';
             if (rsi <= 70) return '🟠 <strong>偏高</strong> - 注意回檔風險';
             return '🔴 <strong>超買</strong> - 可能回檔';
         }
-        
-        // MACD 描述
+
         function getMACDDescription(macd) {
             if (macd === '多頭') return '🟢 趨勢向上，動能增強';
             if (macd === '空頭') return '🔴 趨勢向下，動能減弱';
             return '⚪ 中性';
         }
-        
-        // KD 描述
+
         function getKDDescription(kd) {
             if (kd === '超賣') return '🟢 短線超賣，可能反彈';
             if (kd === '超買') return '🔴 短線超買，可能回檔';
             return '⚪ 中性，無明顯超買超賣';
         }
-        
-        // MA 描述
+
         function getMADescription(trend, ma5, ma20, ma60) {
-            if (trend === '多頭') {
-                if (ma5 > ma20 && ma20 > ma60) {
-                    return '🟢 完美多頭排列（MA5 > MA20 > MA60）';
-                }
-                return '🟢 多頭趨勢';
-            }
-            if (trend === '空頭') {
-                if (ma60 > ma20 && ma20 > ma5) {
-                    return '🔴 完美空頭排列（MA60 > MA20 > MA5）';
-                }
-                return '🔴 空頭趨勢';
-            }
+            if (trend === '多頭') return ma5 > ma20 && ma20 > ma60 ? '🟢 完美多頭排列（MA5 > MA20 > MA60）' : '🟢 多頭趨勢';
+            if (trend === '空頭') return ma60 > ma20 && ma20 > ma5 ? '🔴 完美空頭排列（MA60 > MA20 > MA5）' : '🔴 空頭趨勢';
             return '⚪ 中性，無明確趨勢';
         }
-        
-        // 價格 vs MA
+
         function getPriceVsMA(price, ma) {
             const diff = ((price - ma) / ma * 100).toFixed(2);
-            if (diff > 0) return `<span class="positive">+${diff}%</span>`;
-            return `<span class="negative">${diff}%</span>`;
+            return diff > 0
+                ? `<span class="positive">+${diff}%</span>`
+                : `<span class="negative">${diff}%</span>`;
         }
-        
-        // 價格位置描述
+
         function getPricePositionDescription(price, ma20, ma60) {
-            if (price > ma20 && price > ma60) {
-                return '🟢 價格站上月線與季線，強勢';
-            }
-            if (price > ma20) {
-                return '🟡 價格站上月線，季線之上';
-            }
-            if (price < ma60) {
-                return '🔴 價格跌破季線，弱勢';
-            }
+            if (price > ma20 && price > ma60) return '🟢 價格站上月線與季線，強勢';
+            if (price > ma20)                 return '🟡 價格站上月線，季線之上';
+            if (price < ma60)                 return '🔴 價格跌破季線，弱勢';
             return '⚪ 價格在均線間波動';
         }
-        
-        // 訊號描述
+
         function getSignalDescription(signal, score) {
             if (signal === '買點') {
                 if (score >= 80) return '🟢 <strong>強烈買點</strong> - 多指標共振，建議積極買入';
                 if (score >= 70) return '🟢 <strong>買點</strong> - 技術面轉強，可以買入';
                 return '🟡 <strong>關注</strong> - 有買點訊號，但評分偏低';
             }
-            if (signal === '賣點') {
-                return '🔴 <strong>賣點</strong> - 技術面轉弱，建議觀望或減碼';
-            }
+            if (signal === '賣點') return '🔴 <strong>賣點</strong> - 技術面轉弱，建議觀望或減碼';
             return '⚪ <strong>中性</strong> - 無明確方向，持續觀察';
         }
-        
-        // 操作建議
+
         function getActionAdvice(stock) {
             let advice = '';
-            
-            if (stock.score >= 80) {
-                advice += '✅ <strong>評分優異（80+）</strong>，技術面非常強勢<br>';
-                advice += '✅ 建議積極買入，但仍需設定停損（建議 -5%）<br>';
-            } else if (stock.score >= 70) {
-                advice += '✅ <strong>評分良好（70-79）</strong>，技術面轉強<br>';
-                advice += '✅ 可以買入，建議停損 -5%<br>';
-            } else if (stock.score >= 60) {
-                advice += '⚠️ <strong>評分中等（60-69）</strong>，持續觀察<br>';
-                advice += '⚠️ 可小額試單，嚴格停損<br>';
-            } else {
-                advice += '❌ <strong>評分偏低（<60）</strong>，技術面較弱<br>';
-                advice += '❌ 建議觀望，不建議買入<br>';
-            }
-            
-            if (stock.macd === '多頭' && stock.kd === '超賣') {
-                advice += '🎯 <strong>多指標共振</strong>：MACD 轉多 + KD 超賣，絕佳買點<br>';
-            }
-            
-            if (stock.ma_trend === '多頭') {
-                advice += '📈 <strong>多頭排列</strong>，趨勢明確向上<br>';
-            }
-            
-            if (stock.rsi < 30) {
-                advice += '💡 RSI 嚴重超賣，短線可能強力反彈<br>';
-            }
-            
+            if      (stock.score >= 80) { advice += '✅ <strong>評分優異（80+）</strong>，技術面非常強勢<br>✅ 建議積極買入，但仍需設定停損（建議 -5%）<br>'; }
+            else if (stock.score >= 70) { advice += '✅ <strong>評分良好（70-79）</strong>，技術面轉強<br>✅ 可以買入，建議停損 -5%<br>'; }
+            else if (stock.score >= 60) { advice += '⚠️ <strong>評分中等（60-69）</strong>，持續觀察<br>⚠️ 可小額試單，嚴格停損<br>'; }
+            else                        { advice += '❌ <strong>評分偏低（<60）</strong>，技術面較弱<br>❌ 建議觀望，不建議買入<br>'; }
+
+            if (stock.macd === '多頭' && stock.kd === '超賣') advice += '🎯 <strong>多指標共振</strong>：MACD 轉多 + KD 超賣，絕佳買點<br>';
+            if (stock.ma_trend === '多頭')                    advice += '📈 <strong>多頭排列</strong>，趨勢明確向上<br>';
+            if (stock.rsi < 30)                               advice += '💡 RSI 嚴重超賣，短線可能強力反彈<br>';
             return advice;
         }
-        
-        // 載入持倉明細
+
+        // ==================== 持倉明細 ====================
+
         async function loadPortfolio() {
+            const tbody = document.getElementById('portfolio-body');
             try {
-                const response = await fetch(`${API_BASE}/holdings/batches`);
-                const batches = await response.json();
-                
-                let totalCost = 0;
-                let totalValue = 0;
-                
-                batches.forEach(batch => {
-                    totalCost += batch.shares * batch.buy_price;
-                    totalValue += batch.current_value;
+                const response = await fetch(`${CONFIG.TRADE_API}/holdings/batches`);
+                const batches  = await response.json();
+
+                let totalCost = 0, totalValue = 0;
+                batches.forEach(b => {
+                    totalCost  += b.shares * b.buy_price;
+                    totalValue += b.current_value;
                 });
-                
-                const totalPnL = totalValue - totalCost;
+
+                const totalPnL    = totalValue - totalCost;
                 const totalReturn = totalCost > 0 ? (totalPnL / totalCost) * 100 : 0;
-                
-                document.getElementById('total-cost').textContent = '$' + Math.round(totalCost).toLocaleString();
-                document.getElementById('total-value').textContent = '$' + Math.round(totalValue).toLocaleString();
-                document.getElementById('total-pnl').textContent = (totalPnL >= 0 ? '+' : '') + '$' + Math.round(totalPnL).toLocaleString();
-                document.getElementById('total-pnl').className = totalPnL >= 0 ? 'positive' : 'negative';
+
+                document.getElementById('total-cost').textContent   = '$' + Math.round(totalCost).toLocaleString();
+                document.getElementById('total-value').textContent  = '$' + Math.round(totalValue).toLocaleString();
+                document.getElementById('total-pnl').textContent    = (totalPnL >= 0 ? '+' : '') + '$' + Math.round(totalPnL).toLocaleString();
+                document.getElementById('total-pnl').className      = totalPnL >= 0 ? 'positive' : 'negative';
                 document.getElementById('total-return').textContent = (totalReturn >= 0 ? '+' : '') + totalReturn.toFixed(2) + '%';
-                document.getElementById('total-return').className = totalReturn >= 0 ? 'positive' : 'negative';
-                
-                const tbody = document.getElementById('portfolio-body');
+                document.getElementById('total-return').className   = totalReturn >= 0 ? 'positive' : 'negative';
+
                 if (batches.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;">尚無持股<br>請到「📊 TOP 選股」買入開始模擬交易</td></tr>';
                 } else {
                     tbody.innerHTML = batches.map(batch => {
                         const pnlClass = batch.profit_loss >= 0 ? 'positive' : 'negative';
-                        const buyDate = new Date(batch.buy_date).toLocaleDateString('zh-TW');
-                        
+                        const buyDate  = new Date(batch.buy_date).toLocaleDateString('zh-TW');
                         return `
                             <tr>
                                 <td><strong>${batch.symbol}</strong></td>
@@ -1129,17 +1077,13 @@
                                 <td>${batch.shares.toLocaleString()}</td>
                                 <td>$ ${batch.buy_price.toFixed(2)}</td>
                                 <td>$ ${batch.current_price.toFixed(2)}</td>
-                                <td class="${pnlClass}">
-                                    ${batch.profit_loss >= 0 ? '+' : ''}$ ${Math.round(batch.profit_loss).toLocaleString()}
-                                </td>
-                                <td class="${pnlClass}">
-                                    ${batch.return_pct >= 0 ? '+' : ''}${batch.return_pct.toFixed(2)}%
-                                </td>
+                                <td class="${pnlClass}">${batch.profit_loss >= 0 ? '+' : ''}$ ${Math.round(batch.profit_loss).toLocaleString()}</td>
+                                <td class="${pnlClass}">${batch.return_pct >= 0 ? '+' : ''}${batch.return_pct.toFixed(2)}%</td>
                                 <td>${buyDate}</td>
                                 <td>${batch.days_held} 天</td>
                                 <td style="font-size:0.85em;">${batch.reason || '-'}</td>
                                 <td>
-                                    <button onclick="sellStock('${batch.symbol}', '${batch.name}', ${batch.current_price}, ${batch.shares})" 
+                                    <button onclick="showSellModal('${batch.symbol}', '${batch.name}', ${batch.current_price}, ${batch.shares})"
                                             class="btn btn-sell">
                                         📉 賣出
                                     </button>
@@ -1149,45 +1093,65 @@
                     }).join('');
                 }
             } catch (error) {
-                console.error('載入持倉失敗:', error);
+                // [FIX #8] 錯誤 UI
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="error-message">
+                            <h3>❌ 載入失敗</h3>
+                            <p>${error.message}</p>
+                        </td>
+                    </tr>`;
             }
         }
-        
-        // 賣出股票
-        async function sellStock(symbol, name, price, maxShares) {
-            const shares = prompt(`請輸入要賣出的股數（目前持有 ${maxShares} 股）:`, maxShares);
-            
-            if (!shares || shares <= 0) return;
-            if (parseInt(shares) > maxShares) {
-                alert('❌ 賣出股數不能超過持有股數');
-                return;
-            }
-            
-            if (!confirm(`確定要賣出 ${name} (${symbol})？\n\n股數: ${shares}\n價格: $${price}\n總金額: $${(shares * price).toLocaleString()}`)) {
-                return;
-            }
-            
+
+        // ==================== 賣出 Modal [FIX #10] ====================
+
+        function showSellModal(symbol, name, price, maxShares) {
+            currentSellData = { symbol, name, price, maxShares };
+            document.getElementById('sell-stock-info').value    = `${name} (${symbol}) @ $${price}`;
+            document.getElementById('sell-max-hint').textContent = `（目前持有 ${maxShares} 股）`;
+            document.getElementById('sell-shares').value        = maxShares;
+            document.getElementById('sell-shares').max          = maxShares;
+            updateSellAmountFromModal();
+            document.getElementById('sell-modal').style.display = 'block';
+        }
+
+        function closeSellModal() {
+            document.getElementById('sell-modal').style.display = 'none';
+        }
+
+        function updateSellAmountFromModal() {
+            if (!currentSellData) return;
+            const shares = parseInt(document.getElementById('sell-shares').value) || 0;
+            document.getElementById('sell-amount-display').textContent = `$${(shares * currentSellData.price).toLocaleString()}`;
+        }
+
+        async function confirmSell() {
+            if (!currentSellData) return;
+            const shares = parseInt(document.getElementById('sell-shares').value);
+            if (!shares || shares <= 0)                  { alert('❌ 請輸入有效的股數'); return; }
+            if (shares > currentSellData.maxShares)      { alert('❌ 賣出股數不能超過持有股數'); return; }
+
+            const { symbol, name, price } = currentSellData;
+            if (!confirm(`確定要賣出 ${name} (${symbol})？\n\n股數: ${shares}\n價格: $${price}\n總金額: $${(shares * price).toLocaleString()}`)) return;
+
             const trade = {
-                type: 'sell',
-                symbol: symbol,
-                name: name,
-                shares: parseInt(shares),
-                price: price,
+                type: 'sell', symbol, name,
+                shares, price,
                 date: new Date().toISOString(),
                 note: '模擬賣出'
             };
-            
+
             try {
-                const response = await fetch(`${API_BASE}/trade/add`, {
+                const response = await fetch(`${CONFIG.TRADE_API}/trade/add`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(trade)
                 });
-                
                 const result = await response.json();
-                
                 if (result.success) {
                     alert(`✅ 賣出成功！\n\n${name} (${symbol})\n股數: ${shares}\n總金額: $${(shares * price).toLocaleString()}`);
+                    closeSellModal();
                     loadPortfolio();
                 } else {
                     alert('❌ 賣出失敗: ' + result.message);
@@ -1196,333 +1160,169 @@
                 alert('❌ 連線錯誤: ' + error.message);
             }
         }
-        
-        // 手動更新持倉股價
+
+        // ==================== 手動更新股價 ====================
+
         async function updatePortfolioPrices() {
-            const btn = document.getElementById('update-price-btn');
+            const btn          = document.getElementById('update-price-btn');
             const originalText = btn.textContent;
-            
             try {
-                btn.disabled = true;
+                btn.disabled    = true;
                 btn.textContent = '⏳ 更新中...';
-                
-                // 重新呼叫 API 獲取最新股價
-                const response = await fetch(`${API_BASE}/holdings/update-prices`, {
-                    method: 'POST'
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('✅ 股價更新成功:', result);
-                    
-                    // 重新載入持倉資料
-                    await loadPortfolio();
-                    
-                    // 顯示成功訊息
-                    btn.textContent = '✅ 更新完成';
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.disabled = false;
-                    }, 2000);
-                } else {
-                    throw new Error('API 回應錯誤: ' + response.status);
-                }
+
+                const response = await fetch(`${CONFIG.TRADE_API}/holdings/update-prices`, { method: 'POST' });
+                if (!response.ok) throw new Error('API 回應錯誤: ' + response.status);
+
+                await loadPortfolio();
+                btn.textContent = '✅ 更新完成';
+                setTimeout(() => { btn.textContent = originalText; btn.disabled = false; }, 2000);
             } catch (error) {
-                console.error('更新股價失敗:', error);
-                alert('❌ 更新失敗: ' + error.message + '\n\n請確認 API 伺服器（Port 8888）是否運行中');
-                
+                alert(`❌ 更新失敗: ${error.message}\n\n請確認 API 伺服器（Port 8888）是否運行中`);
                 btn.textContent = originalText;
-                btn.disabled = false;
+                btn.disabled    = false;
             }
         }
-        
-        // 載入歷次買賣
+
+        // ==================== 歷次買賣 ====================
+
         async function loadHistory() {
+            const tbody = document.getElementById('history-body');
             try {
-                const response = await fetch(`${API_BASE}/trades`);
-                const trades = await response.json();
-                
-                const tbody = document.getElementById('history-body');
+                const response = await fetch(`${CONFIG.TRADE_API}/trades`);
+                const trades   = await response.json();
+
                 if (trades.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;">尚無交易記錄</td></tr>';
-                } else {
-                    // 計算買賣配對與損益
-                    const buyMap = {}; // 儲存買入記錄 {symbol: [{date, price, shares}, ...]}
-                    const enrichedTrades = [];
-                    
-                    // 第一遍：建立買入記錄
-                    trades.forEach(t => {
-                        if (t.type === 'buy') {
-                            if (!buyMap[t.symbol]) buyMap[t.symbol] = [];
-                            buyMap[t.symbol].push({
-                                date: t.date,
-                                price: t.price,
-                                shares: t.shares,
-                                remainingShares: t.shares
-                            });
-                        }
-                    });
-                    
-                    // 第二遍：計算每筆交易的詳細資訊
-                    trades.forEach(t => {
-                        const tradeDate = new Date(t.date).toLocaleDateString('zh-TW');
-                        const typeClass = t.type === 'buy' ? 'badge-buy' : 'badge-sell';
-                        const typeText = t.type === 'buy' ? '買入' : '賣出';
-                        const amountClass = t.type === 'buy' ? 'negative' : 'positive';
-                        
-                        let buyDate = '-';
-                        let daysHeld = '-';
-                        let profitLoss = '-';
-                        
-                        if (t.type === 'sell') {
-                            // FIFO 配對賣出
-                            const buys = buyMap[t.symbol] || [];
-                            let sellShares = t.shares;
-                            let totalCost = 0;
-                            let firstBuyDate = null;
-                            
-                            for (let buy of buys) {
-                                if (sellShares <= 0) break;
-                                if (buy.remainingShares <= 0) continue;
-                                
-                                if (!firstBuyDate) firstBuyDate = new Date(buy.date);
-                                
-                                const sharesToSell = Math.min(sellShares, buy.remainingShares);
-                                totalCost += sharesToSell * buy.price;
-                                buy.remainingShares -= sharesToSell;
-                                sellShares -= sharesToSell;
-                            }
-                            
-                            if (firstBuyDate) {
-                                buyDate = firstBuyDate.toLocaleDateString('zh-TW');
-                                const sellDate = new Date(t.date);
-                                daysHeld = Math.floor((sellDate - firstBuyDate) / (1000 * 60 * 60 * 24));
-                                
-                                const sellRevenue = t.shares * t.price;
-                                const profit = sellRevenue - totalCost;
-                                const profitClass = profit >= 0 ? 'positive' : 'negative';
-                                profitLoss = `<span class="${profitClass}">${profit >= 0 ? '+' : ''}$ ${Math.round(profit).toLocaleString()}</span>`;
-                                daysHeld = daysHeld + ' 天';
-                            }
-                        }
-                        
-                        enrichedTrades.push(`
-                            <tr>
-                                <td>${tradeDate}</td>
-                                <td><span class="${typeClass}">${typeText}</span></td>
-                                <td><strong>${t.symbol}</strong></td>
-                                <td>${t.name}</td>
-                                <td>${t.shares.toLocaleString()}</td>
-                                <td>$ ${t.price.toFixed(2)}</td>
-                                <td class="${amountClass}">
-                                    ${t.type === 'buy' ? '-' : '+'}$ ${Math.round(t.amount).toLocaleString()}
-                                </td>
-                                <td>${buyDate}</td>
-                                <td>${daysHeld}</td>
-                                <td>${profitLoss}</td>
-                                <td style="font-size:0.85em;">${t.note || '-'}</td>
-                            </tr>
-                        `);
-                    });
-                    
-                    tbody.innerHTML = enrichedTrades.join('');
-                }
-            } catch (error) {
-                console.error('載入歷史失敗:', error);
-            }
-        }
-        
-        // 匯出 CSV
-        async function exportCSV() {
-            try {
-                const response = await fetch(`${API_BASE}/trades`);
-                const trades = await response.json();
-                
-                if (trades.length === 0) {
-                    alert('❌ 沒有交易記錄可匯出');
                     return;
                 }
-                
-                let csv = '交易日期,類型,代號,名稱,股數,價格,金額,買入日期,持有天數,損益,備註\n';
-                
-                // 計算買賣配對
-                const buyMap = {};
-                trades.forEach(t => {
-                    if (t.type === 'buy') {
-                        if (!buyMap[t.symbol]) buyMap[t.symbol] = [];
-                        buyMap[t.symbol].push({
-                            date: t.date,
-                            price: t.price,
-                            shares: t.shares,
-                            remainingShares: t.shares
-                        });
+
+                // [FIX #5] 使用共用 FIFO 函式
+                const buyMap = buildFIFOMap(trades);
+
+                tbody.innerHTML = trades.map(t => {
+                    const tradeDate  = new Date(t.date).toLocaleDateString('zh-TW');
+                    const typeClass  = t.type === 'buy' ? 'badge-buy' : 'badge-sell';
+                    const typeText   = t.type === 'buy' ? '買入' : '賣出';
+                    const amountClass = t.type === 'buy' ? 'negative' : 'positive';
+
+                    let buyDateStr = '-', daysHeldStr = '-', profitStr = '-';
+
+                    if (t.type === 'sell') {
+                        const { buyDate, daysHeld, profit } = calcSellPnL(buyMap, t.symbol, t.shares, t.date, t.price);
+                        if (buyDate !== null) {
+                            buyDateStr  = buyDate.toLocaleDateString('zh-TW');
+                            daysHeldStr = daysHeld + ' 天';
+                            const profitClass = profit >= 0 ? 'positive' : 'negative';
+                            profitStr   = `<span class="${profitClass}">${profit >= 0 ? '+' : ''}$ ${Math.round(profit).toLocaleString()}</span>`;
+                        }
                     }
-                });
-                
+
+                    return `
+                        <tr>
+                            <td>${tradeDate}</td>
+                            <td><span class="${typeClass}">${typeText}</span></td>
+                            <td><strong>${t.symbol}</strong></td>
+                            <td>${t.name}</td>
+                            <td>${t.shares.toLocaleString()}</td>
+                            <td>$ ${t.price.toFixed(2)}</td>
+                            <td class="${amountClass}">${t.type === 'buy' ? '-' : '+'}$ ${Math.round(t.amount).toLocaleString()}</td>
+                            <td>${buyDateStr}</td>
+                            <td>${daysHeldStr}</td>
+                            <td>${profitStr}</td>
+                            <td style="font-size:0.85em;">${t.note || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                // [FIX #8] 錯誤 UI
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="error-message">
+                            <h3>❌ 載入失敗</h3>
+                            <p>${error.message}</p>
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        // ==================== 匯出 CSV ====================
+
+        async function exportCSV() {
+            try {
+                const response = await fetch(`${CONFIG.TRADE_API}/trades`);
+                const trades   = await response.json();
+
+                if (trades.length === 0) { alert('❌ 沒有交易記錄可匯出'); return; }
+
+                // [FIX #5] 使用共用 FIFO 函式，不再重複一份
+                const buyMap = buildFIFOMap(trades);
+
+                let csv = '交易日期,類型,代號,名稱,股數,價格,金額,買入日期,持有天數,損益,備註\n';
                 trades.forEach(t => {
                     const date = new Date(t.date).toLocaleDateString('zh-TW');
                     const type = t.type === 'buy' ? '買入' : '賣出';
-                    
-                    let buyDate = '';
-                    let daysHeld = '';
-                    let profitLoss = '';
-                    
+                    let buyDate = '', daysHeld = '', profitLoss = '';
+
                     if (t.type === 'sell') {
-                        const buys = buyMap[t.symbol] || [];
-                        let sellShares = t.shares;
-                        let totalCost = 0;
-                        let firstBuyDate = null;
-                        
-                        for (let buy of buys) {
-                            if (sellShares <= 0) break;
-                            if (buy.remainingShares <= 0) continue;
-                            
-                            if (!firstBuyDate) firstBuyDate = new Date(buy.date);
-                            
-                            const sharesToSell = Math.min(sellShares, buy.remainingShares);
-                            totalCost += sharesToSell * buy.price;
-                            buy.remainingShares -= sharesToSell;
-                            sellShares -= sharesToSell;
-                        }
-                        
-                        if (firstBuyDate) {
-                            buyDate = firstBuyDate.toLocaleDateString('zh-TW');
-                            const sellDate = new Date(t.date);
-                            daysHeld = Math.floor((sellDate - firstBuyDate) / (1000 * 60 * 60 * 24));
-                            
-                            const sellRevenue = t.shares * t.price;
-                            const profit = sellRevenue - totalCost;
+                        const { buyDate: bd, daysHeld: dh, profit } = calcSellPnL(buyMap, t.symbol, t.shares, t.date, t.price);
+                        if (bd !== null) {
+                            buyDate   = bd.toLocaleDateString('zh-TW');
+                            daysHeld  = dh;
                             profitLoss = profit.toFixed(0);
                         }
                     }
-                    
                     csv += `${date},${type},${t.symbol},${t.name},${t.shares},${t.price},${t.amount},${buyDate},${daysHeld},${profitLoss},"${t.note || ''}"\n`;
                 });
-                
+
                 const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
+                link.href     = URL.createObjectURL(blob);
                 link.download = `交易記錄_${new Date().toISOString().split('T')[0]}.csv`;
                 link.click();
-                
                 alert('✅ CSV 檔案已匯出！');
             } catch (error) {
                 alert('❌ 匯出失敗: ' + error.message);
             }
         }
-        
-        // 頁面載入時執行
-        window.onload = function() {
-            loadPicks();
-            
-            // 啟動自動重新載入（盤中時間每 20 分鐘）
-            startAutoRefresh();
-        };
-        
-        // 自動重新載入（盤中時間）
-        function startAutoRefresh() {
-            // 檢查是否在盤中時間
-            function isTradingHours() {
-                const now = new Date();
-                const day = now.getDay();
-                const hour = now.getHours();
-                
-                // 週末不交易
-                if (day === 0 || day === 6) return false;
-                
-                // 盤中時間 09:00-14:00
-                if (hour >= 9 && hour < 14) return true;
-                
-                return false;
-            }
-            
-            // 每 20 分鐘更新一次
-            setInterval(() => {
-                if (isTradingHours()) {
-                    console.log('🔄 自動更新持倉明細...');
-                    loadPortfolio();
-                }
-            }, 20 * 60 * 1000); // 20 分鐘
-            
-            // 每分鐘檢查一次是否進入盤中時間
-            setInterval(() => {
-                if (isTradingHours()) {
-                    const now = new Date();
-                    const minutes = now.getMinutes();
-                    
-                    // 整點、20分、40分更新
-                    if (minutes === 0 || minutes === 20 || minutes === 40) {
-                        console.log('🔄 盤中定時更新...');
-                        loadPortfolio();
-                    }
-                }
-            }, 60 * 1000); // 1 分鐘
-        }
-        
-        // 統一買入進入點（向下相容）
-        function openBuyModal(symbol, name, price, reason) {
-            showBuyModal(symbol, name, price, reason);
-        }
-        
-        // 點擊模態框外部關閉
-        window.onclick = function(event) {
-            if (event.target.id === 'buy-modal') {
-                closeBuyModal();
-            }
-        };
 
-        // ==================== 產業熱度分析功能 ====================
-        
+        // ==================== 產業熱度 ====================
+
         async function loadSectorHeatmap() {
             try {
                 const response = await fetch('sector_heatmap.json?t=' + new Date().getTime());
-                const data = await response.json();
-                
-                // 更新摘要資訊
+                const data     = await response.json();
+
                 document.getElementById('sector-update-time').textContent = data.update_time || data.date;
-                document.getElementById('sector-count').textContent = data.all_sectors.length + ' 個';
-                
-                // 計算總股票數
+                document.getElementById('sector-count').textContent       = data.all_sectors.length + ' 個';
+
                 const totalStocks = data.all_sectors.reduce((sum, s) => sum + s.stock_count, 0);
                 document.getElementById('sector-stock-count').textContent = totalStocks + ' 支';
-                
-                // 計算市場狀態
-                const upSectors = data.all_sectors.filter(s => s.change_rate > 0).length;
+
+                const upSectors   = data.all_sectors.filter(s => s.change_rate > 0).length;
                 const downSectors = data.all_sectors.filter(s => s.change_rate < 0).length;
-                const marketStatus = upSectors > downSectors ? '📈 偏多' : downSectors > upSectors ? '📉 偏空' : '➡️ 盤整';
-                document.getElementById('market-status').textContent = marketStatus;
-                
-                // 渲染熱門產業
-                renderSectorTable('hot-sectors-table', data.hot_sectors, true);
-                
-                // 渲染冷門產業
+                document.getElementById('market-status').textContent =
+                    upSectors > downSectors ? '📈 偏多' : downSectors > upSectors ? '📉 偏空' : '➡️ 盤整';
+
+                renderSectorTable('hot-sectors-table',  data.hot_sectors,  true);
                 renderSectorTable('cold-sectors-table', data.cold_sectors, false);
-                
-                // 渲染完整產業列表
                 renderAllSectorsTable(data.all_sectors);
-                
             } catch (error) {
-                console.error('載入產業熱度失敗:', error);
-                document.getElementById('hot-sectors-table').innerHTML = 
-                    '<tr><td colspan="6" style="text-align:center;padding:30px;color:#e74c3c;">載入失敗，請稍後再試</td></tr>';
+                document.getElementById('hot-sectors-table').innerHTML =
+                    '<tr><td colspan="6" class="error-message"><h3>❌ 載入失敗</h3><p>' + error.message + '</p></td></tr>';
             }
         }
-        
+
         function renderSectorTable(tableId, sectors, isHot) {
             const tbody = document.getElementById(tableId);
-            
             if (!sectors || sectors.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">暫無資料</td></tr>';
                 return;
             }
-            
-            let html = '';
-            sectors.forEach((sector, index) => {
+            tbody.innerHTML = sectors.map((sector, index) => {
                 const changeRate = sector.change_rate.toFixed(2);
-                const rateClass = sector.change_rate > 0 ? 'positive' : sector.change_rate < 0 ? 'negative' : '';
-                const emoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
-                
-                html += `
+                const rateClass  = sector.change_rate > 0 ? 'positive' : sector.change_rate < 0 ? 'negative' : '';
+                const emoji      = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                return `
                     <tr>
                         <td style="text-align:center;font-size:1.2em;">${emoji}</td>
                         <td><strong>${sector.name}</strong></td>
@@ -1532,26 +1332,20 @@
                         <td style="color:#666;">${sector.lead_stocks[0] || '-'}</td>
                     </tr>
                 `;
-            });
-            
-            tbody.innerHTML = html;
+            }).join('');
         }
-        
+
         function renderAllSectorsTable(sectors) {
             const tbody = document.getElementById('all-sectors-table');
-            
             if (!sectors || sectors.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">暫無資料</td></tr>';
                 return;
             }
-            
-            let html = '';
-            sectors.forEach(sector => {
+            tbody.innerHTML = sectors.map(sector => {
                 const changeRate = sector.change_rate.toFixed(2);
-                const rateClass = sector.change_rate > 0 ? 'positive' : sector.change_rate < 0 ? 'negative' : '';
-                const flatCount = sector.stock_count - sector.up_count - sector.down_count;
-                
-                html += `
+                const rateClass  = sector.change_rate > 0 ? 'positive' : sector.change_rate < 0 ? 'negative' : '';
+                const flatCount  = sector.stock_count - sector.up_count - sector.down_count;
+                return `
                     <tr>
                         <td><strong>${sector.name}</strong></td>
                         <td class="${rateClass}" style="font-weight:bold;font-size:1.1em;">${changeRate > 0 ? '+' : ''}${changeRate}%</td>
@@ -1562,23 +1356,52 @@
                         <td style="color:#666;font-size:0.9em;">${sector.lead_stocks[0] || '-'}</td>
                     </tr>
                 `;
-            });
-            
-            tbody.innerHTML = html;
+            }).join('');
         }
-        
-        // 在切換到產業分頁時載入資料
-        const originalSwitchTab = window.switchTab;
-        window.switchTab = function(tab) {
-            originalSwitchTab(tab);
-            if (tab === 'sectors') {
-                loadSectorHeatmap();
+
+        // ==================== 自動刷新 [FIX #7] ====================
+
+        // [FIX #7] 單一 setInterval 統一管理，不再跑兩個計時器
+        function startAutoRefresh() {
+            function isTradingHours() {
+                const now = new Date();
+                const day = now.getDay();
+                if (day === 0 || day === 6) return false;
+                const hour = now.getHours();
+                return hour >= 9 && hour < 14;
             }
+
+            setInterval(() => {
+                if (!isTradingHours()) return;
+                const minutes = new Date().getMinutes();
+                if (minutes === 0 || minutes === 20 || minutes === 40) {
+                    console.log('🔄 盤中定時更新...');
+                    loadPortfolio();
+                }
+            }, 60 * 1000);
+        }
+
+        // ==================== 統一買入進入點 ====================
+
+        function openBuyModal(symbol, name, price, reason) {
+            showBuyModal(symbol, name, price, reason);
+        }
+
+        // ==================== 頁面初始化 ====================
+
+        window.onload = function () {
+            loadPicks();
+            startAutoRefresh();
+        };
+
+        // 點擊 Modal 外部關閉
+        window.onclick = function (event) {
+            if (event.target.id === 'buy-modal')  closeBuyModal();
+            if (event.target.id === 'sell-modal') closeSellModal();
         };
     </script>
-    
+
     <!-- 載入分批次持倉模組（覆寫 loadPortfolio） -->
     <script src="portfolio_batches.js"></script>
-<!-- 模擬買入功能 -->
 </body>
 </html>
