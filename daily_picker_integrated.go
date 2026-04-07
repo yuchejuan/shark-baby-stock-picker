@@ -98,13 +98,10 @@ type DailyPick struct {
 }
 
 type DailyReport struct {
-	Date      string      `json:"date"`
-	Picks2030 []DailyPick `json:"picks_20_30"`
-	Picks3040 []DailyPick `json:"picks_30_40"`
-	Picks4050 []DailyPick `json:"picks_40_50"`
-	Picks5060 []DailyPick `json:"picks_50_60"`
-	BestPick  *DailyPick  `json:"best_pick"`
-	Summary   Summary     `json:"summary"`
+	Date     string      `json:"date"`
+	AllPicks []DailyPick `json:"all_picks"` // 全市場選股，無價格限制
+	BestPick *DailyPick  `json:"best_pick"`
+	Summary  Summary     `json:"summary"`
 }
 
 type Summary struct {
@@ -550,6 +547,45 @@ func stockInfoToDailyPick(s *StockInfo, rank int) DailyPick {
 	}
 }
 
+func analyzeAllStocks(stocks map[string]string) []DailyPick {
+	var results []*StockInfo
+	total := len(stocks)
+	processed := 0
+
+	fmt.Printf("🔍 全市場掃描 %d 支股票（無價格限制）...\n", total)
+
+	for code, name := range stocks {
+		stock, err := AnalyzeStock(code, name)
+		if err != nil {
+			continue
+		}
+		results = append(results, stock)
+
+		processed++
+		if processed%10 == 0 {
+			fmt.Printf("  ⏳ 進度: %d/%d（%.0f%%）\n",
+				processed, total, float64(processed)/float64(total)*100)
+		}
+
+		time.Sleep(500 * time.Millisecond)
+	}
+
+	// 依評分排序
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Score > results[j].Score
+	})
+
+	// 全部轉為 DailyPick，加上排名
+	var picks []DailyPick
+	for i, s := range results {
+		pick := stockInfoToDailyPick(s, i+1)
+		picks = append(picks, pick)
+	}
+
+	fmt.Printf("✅ 分析完成：%d 支成功 / %d 支總計\n\n", len(picks), total)
+	return picks
+}
+
 func analyzeStocksInRange(stocks map[string]string, minPrice, maxPrice float64) []DailyPick {
 	var results []*StockInfo
 	processed := 0
@@ -602,29 +638,23 @@ func analyzeStocksInRange(stocks map[string]string, minPrice, maxPrice float64) 
 
 func main() {
 	fmt.Println("🦈 每日選股報告 V3.0 整合版")
-	fmt.Println("📊 81支股票池 + 20-60元區間 + 6大技術指標 + 100分制評分")
+	fmt.Println("📊 135支股票池 + 全價格區間 + 6大技術指標 + 100分制評分")
 	fmt.Println(strings.Repeat("=", 60))
-	
+
 	// 載入股票池
 	pool, err := loadStockPool("stock_pool.json")
 	if err != nil {
 		fmt.Printf("❌ 載入股票池失敗: %v\n", err)
 		os.Exit(1)
 	}
-	
+
 	candidates := getAllStocksFromPool(pool)
-	fmt.Printf("\n✅ 載入股票池：%d 支（ETF %d + 個股 %d）\n", 
+	fmt.Printf("\n✅ 載入股票池：%d 支（ETF %d + 個股 %d）\n",
 		pool.Total, pool.ETF.Count, pool.Stocks.Count)
-	
-	// 分析各價格區間
-	fmt.Println("\n🚀 開始分析...\n")
-	picks2030 := analyzeStocksInRange(candidates, 20, 30)
-	picks3040 := analyzeStocksInRange(candidates, 30, 40)
-	picks4050 := analyzeStocksInRange(candidates, 40, 50)
-	picks5060 := analyzeStocksInRange(candidates, 50, 60)
-	
-	// 找出最佳推薦
-	allPicks := append(append(append(picks2030, picks3040...), picks4050...), picks5060...)
+
+	// 分析全市場（無價格限制）
+	fmt.Println("\n🚀 開始分析全市場股票...\n")
+	allPicks := analyzeAllStocks(candidates)
 	var bestPick *DailyPick
 	if len(allPicks) > 0 {
 		sort.Slice(allPicks, func(i, j int) bool {
@@ -636,6 +666,7 @@ func main() {
 	// 統計資料
 	buySignals := 0
 	riskWarnings := 0
+	topPicks := 0
 	for _, p := range allPicks {
 		if p.Signal == "買點" {
 			buySignals++
@@ -643,26 +674,26 @@ func main() {
 		if p.Signal == "風險" || p.Score < 40 {
 			riskWarnings++
 		}
+		if p.Score >= 70 {
+			topPicks++
+		}
 	}
-	
+
 	// 產生報告
 	report := DailyReport{
-		Date:      time.Now().Format("2006-01-02"),
-		Picks2030: picks2030,
-		Picks3040: picks3040,
-		Picks4050: picks4050,
-		Picks5060: picks5060,
-		BestPick:  bestPick,
+		Date:     time.Now().Format("2006-01-02"),
+		AllPicks: allPicks,
+		BestPick: bestPick,
 		Summary: Summary{
 			TotalStocks:  len(allPicks),
 			PoolSize:     pool.Total,
-			TopPicks:     len(allPicks),
+			TopPicks:     topPicks,
 			BuySignals:   buySignals,
 			RiskWarnings: riskWarnings,
 			UpdateTime:   time.Now().Format("2006-01-02 15:04:05"),
 		},
 	}
-	
+
 	// 儲存 JSON
 	outputFile := "stock_web/daily_report.json"
 	os.MkdirAll("stock_web", 0755)
@@ -671,89 +702,64 @@ func main() {
 		fmt.Printf("❌ JSON 產生失敗: %v\n", err)
 		os.Exit(1)
 	}
-	
+
 	if err := os.WriteFile(outputFile, jsonData, 0644); err != nil {
 		fmt.Printf("❌ 儲存失敗: %v\n", err)
 		os.Exit(1)
 	}
-	
-	// 顯示結果
+
+	// 顯示 TOP 10 結果
 	fmt.Println(strings.Repeat("=", 60))
-	fmt.Println("📊 選股結果摘要")
+	fmt.Println("🏆 全市場 TOP 10 選股")
 	fmt.Println(strings.Repeat("=", 60))
-	
-	fmt.Printf("\n💰 20-30元區間 (TOP %d):\n", len(picks2030))
-	for _, p := range picks2030 {
-		fmt.Printf("  #%d %s (%s) - $%.2f ⭐%d分 [%s]\n", 
-			p.Rank, p.Name, p.Symbol, p.Price, p.Score, p.Signal)
-		fmt.Printf("      RSI:%.1f | MACD:%s | KD:%s | 均線:%s\n", 
-			p.RSI, p.MACD, p.KD, p.MATrend)
-		fmt.Printf("      優勢: %s\n\n", p.Advantage)
+
+	limit := 10
+	if len(allPicks) < limit {
+		limit = len(allPicks)
 	}
-	
-	fmt.Printf("💰 30-40元區間 (TOP %d):\n", len(picks3040))
-	for _, p := range picks3040 {
-		fmt.Printf("  #%d %s (%s) - $%.2f ⭐%d分 [%s]\n", 
+	for _, p := range allPicks[:limit] {
+		fmt.Printf("\n  #%d %s (%s) - $%.2f  ⭐%d分  [%s]\n",
 			p.Rank, p.Name, p.Symbol, p.Price, p.Score, p.Signal)
-		fmt.Printf("      RSI:%.1f | MACD:%s | KD:%s | 均線:%s\n", 
+		fmt.Printf("      RSI:%.1f | MACD:%s | KD:%s | 均線:%s\n",
 			p.RSI, p.MACD, p.KD, p.MATrend)
-		fmt.Printf("      優勢: %s\n\n", p.Advantage)
+		fmt.Printf("      優勢: %s\n", p.Advantage)
 	}
-	
-	fmt.Printf("💰 40-50元區間 (TOP %d):\n", len(picks4050))
-	for _, p := range picks4050 {
-		fmt.Printf("  #%d %s (%s) - $%.2f ⭐%d分 [%s]\n", 
-			p.Rank, p.Name, p.Symbol, p.Price, p.Score, p.Signal)
-		fmt.Printf("      RSI:%.1f | MACD:%s | KD:%s | 均線:%s\n", 
-			p.RSI, p.MACD, p.KD, p.MATrend)
-		fmt.Printf("      優勢: %s\n\n", p.Advantage)
-	}
-	
-	fmt.Printf("💰 50-60元區間 (TOP %d):\n", len(picks5060))
-	for _, p := range picks5060 {
-		fmt.Printf("  #%d %s (%s) - $%.2f ⭐%d分 [%s]\n", 
-			p.Rank, p.Name, p.Symbol, p.Price, p.Score, p.Signal)
-		fmt.Printf("      RSI:%.1f | MACD:%s | KD:%s | 均線:%s\n", 
-			p.RSI, p.MACD, p.KD, p.MATrend)
-		fmt.Printf("      優勢: %s\n\n", p.Advantage)
-	}
-	
+
 	if bestPick != nil {
 		fmt.Println(strings.Repeat("-", 60))
 		fmt.Printf("🏆 今日最佳推薦: %s (%s)\n", bestPick.Name, bestPick.Symbol)
-		fmt.Printf("    評分: ⭐%d分 | 現價: $%.2f | 訊號: [%s]\n", 
+		fmt.Printf("    評分: ⭐%d分 | 現價: $%.2f | 訊號: [%s]\n",
 			bestPick.Score, bestPick.Price, bestPick.Signal)
-		fmt.Printf("    RSI: %.1f | MACD: %s | KD: %s\n", 
+		fmt.Printf("    RSI: %.1f | MACD: %s | KD: %s\n",
 			bestPick.RSI, bestPick.MACD, bestPick.KD)
 		fmt.Printf("    均線趨勢: %s\n", bestPick.MATrend)
 		fmt.Printf("    優勢: %s\n", bestPick.Advantage)
 		fmt.Println(strings.Repeat("-", 60))
 	}
-	
+
 	fmt.Printf("\n📊 本次選股統計:\n")
-	fmt.Printf("  股票池: %d 支\n", report.Summary.PoolSize)
-	fmt.Printf("  總計: %d 支\n", report.Summary.TotalStocks)
+	fmt.Printf("  股票池: %d 支（全價格區間）\n", report.Summary.PoolSize)
+	fmt.Printf("  成功分析: %d 支\n", report.Summary.TotalStocks)
 	fmt.Printf("  評分70+: %d 支\n", report.Summary.TopPicks)
 	fmt.Printf("  買點訊號: %d 支\n", report.Summary.BuySignals)
 	fmt.Printf("  風險警示: %d 支\n", report.Summary.RiskWarnings)
-	
+
 	if riskWarnings > 0 {
 		fmt.Println("\n⚠️  風險提示:")
 		for _, p := range allPicks {
 			if p.Signal == "風險" || p.Score < 40 {
-				reason := ""
+				reason := "技術面弱勢"
 				if p.RSI > 70 {
 					reason = "RSI超買"
-				} else if p.MATrend == "空頭排列" {
+				} else if p.MATrend == "空頭" {
 					reason = "空頭排列"
-				} else {
-					reason = "技術面弱勢"
 				}
 				fmt.Printf("  ⚠️  %s (%s) - 評分:%d [%s]\n", p.Name, p.Symbol, p.Score, reason)
 			}
 		}
 	}
-	
+
 	fmt.Printf("\n✅ 報告已儲存至: %s\n", outputFile)
 	fmt.Println("🦈 選股完成！")
 }
+

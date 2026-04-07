@@ -43,8 +43,6 @@ type Summary struct {
 	UpdateTime   string `json:"update_time"`
 }
 
-// 熱門股票清單（81 支）- 與高股息追蹤系統同步
-var popularStocks = []string{
 var popularStocks = []string{
 
 	// ══════════════════════════════════════════
