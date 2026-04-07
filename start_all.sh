@@ -41,7 +41,7 @@ echo ""
 
 # 4. 啟動網頁伺服器
 echo "🌐 啟動網頁伺服器 (Port 8080)..."
-cd stock_web
+cd html
 
 PORT=8080
 echo ""

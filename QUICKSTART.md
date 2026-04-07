@@ -1,180 +1,100 @@
-# 🦈 快速開始 - 5 分鐘上手
+# 🦈 快速開始
 
-## 1️⃣ 一鍵啟動（最簡單）
+## 📁 專案結構
 
-```bash
-cd /home/administrator/.openclaw/workspace/stock_web
-./start_server.sh
 ```
-
-然後開啟瀏覽器訪問: **http://localhost:8080**
+shark-baby-stock-picker/
+├── html/                    ← 🌐 Web 根目錄（瀏覽器開這裡）
+│   ├── index.html           ← 主頁面（選股 / 持倉 / 產業）
+│   ├── dividend_tracker.html← 高股息追蹤
+│   ├── dividend_strategy.html
+│   ├── trade.html           ← 交易記錄
+│   ├── portfolio_batches.js
+│   ├── simulation.js
+│   └── test_runner.html     ← 自動化測試頁
+├── data/                    ← 📊 資料備份
+├── docs/                    ← 📚 說明文件
+├── scripts/                 ← 🔧 工具腳本
+├── _archive/                ← 📦 舊版備份（不需理會）
+│
+├── daily_picker_integrated.go ← 每日選股主程式
+├── trade_manager.go           ← 交易 API（Port 8888）
+├── web_updater.go             ← 更新持倉股價
+├── stock_query_api.go         ← 個股查詢（Port 8765）
+├── dividend_scraper.go        ← 高股息爬蟲
+├── sector_analyzer_twse_full.go← 產業分析
+│
+├── stock_pool.json            ← 股票池設定（135支）
+├── start_all.sh               ← 一鍵啟動
+└── test_static.sh             ← 靜態測試
+```
 
 ---
 
-## 2️⃣ 手動更新資料
-
-### 更新投資組合（取得最新股價）
+## 1️⃣ 一鍵啟動
 
 ```bash
-cd /home/administrator/.openclaw/workspace
+bash start_all.sh
+```
+
+開啟瀏覽器：**http://localhost:8080**
+
+---
+
+## 2️⃣ 每日選股報告
+
+```bash
+go run daily_picker_integrated.go
+```
+
+輸出至 `html/daily_report.json`，重新整理網頁即可看到結果。
+
+---
+
+## 3️⃣ 更新持倉股價
+
+```bash
 go run web_updater.go
 ```
 
-### 產生每日選股報告
+---
+
+## 4️⃣ 啟動交易 API
 
 ```bash
-cd /home/administrator/.openclaw/workspace
-go run daily_report_web.go
+go build -o trade_manager trade_manager.go
+./trade_manager
 ```
+
+API 在 Port 8888，網頁的買入/賣出功能需要這個。
 
 ---
 
-## 3️⃣ 查看網頁
-
-### 方式一：直接開啟（不需伺服器）
+## 5️⃣ 個股即時查詢
 
 ```bash
-# Windows (WSL)
-explorer.exe stock_web/index.html
-
-# Linux
-xdg-open stock_web/index.html
-
-# macOS
-open stock_web/index.html
+go run stock_query_api.go
 ```
 
-### 方式二：本地伺服器（推薦）
+啟動後在網頁查詢任意股票代號（Port 8765）。
+
+---
+
+## 📅 每日建議流程
 
 ```bash
-cd stock_web
-python3 -m http.server 8080
+# 收盤後（15:30 以後）
+go run daily_picker_integrated.go   # 產生選股報告
+go run web_updater.go               # 更新持倉股價
 ```
-
-訪問: http://localhost:8080
 
 ---
 
-## 4️⃣ 自動化排程
-
-### 使用 OpenClaw Cron（推薦）
-
-找鯊魚寶寶說：
-
-```
-幫我設定每週一到週五下午 3:30 自動更新股票網頁
-```
-
-或手動設定：
+## 🧪 驗證系統正常
 
 ```bash
-/cron add \
-  --schedule "30 15 * * 1-5" \
-  --task "cd /home/administrator/.openclaw/workspace && go run web_updater.go && go run daily_report_web.go" \
-  --name "股票網頁自動更新"
+bash test_static.sh   # 靜態分析（不需伺服器）
+bash test_api.sh      # API 測試（需先啟動 trade_manager）
 ```
 
----
-
-## 📱 網頁功能
-
-### 💼 投資組合
-- ✅ 即時股價更新
-- ✅ 損益計算
-- ✅ 報酬率統計
-- ✅ 建倉理由記錄
-
-### 📊 每日選股
-- ✅ 20-30 元區間精選
-- ✅ 30-40 元區間精選
-- ✅ 技術評分排名
-- ✅ RSI 超賣機會
-
-### 👀 監控清單
-- ✅ 台積電、聯發科等權值股
-- ✅ 技術面評分
-- ✅ 均線排列狀況
-
-### 📈 技術分析
-- ✅ 市場漲跌統計
-- ✅ 超賣買點提示
-- ✅ 風險警告
-
----
-
-## ⚡ 常見問題
-
-### Q: 為什麼股價都是 0 或沒更新？
-
-A: 可能是以下原因：
-1. **休市時段** - Yahoo Finance 在週末/假日不提供資料
-2. **網路問題** - 檢查網路連線
-3. **API 限制** - 稍後再試
-
-解決方式：**等到週一開盤後再執行**
-
-### Q: 網頁打不開？
-
-A: 確認：
-1. 檔案路徑正確 (`stock_web/index.html`)
-2. Python 伺服器有在跑 (`python3 -m http.server 8080`)
-3. 瀏覽器訪問 `http://localhost:8080`（不是檔案路徑）
-
-### Q: 想新增/修改持倉股票？
-
-A: 編輯 `web_updater.go` 的 `holdings` 變數：
-
-```go
-var holdings = []Stock{
-    {"2330.TW", "台積電", 100, 580.00, 0, 0, 0, "長期投資"},
-    // 新增你的股票...
-}
-```
-
-然後重新執行 `go run web_updater.go`
-
----
-
-## 🎯 每日流程建議
-
-### 📅 週一至週五（交易日）
-
-**下午 3:30 收盤後:**
-
-```bash
-# 1. 更新資料
-cd /home/administrator/.openclaw/workspace
-go run web_updater.go
-go run daily_report_web.go
-
-# 2. 查看網頁
-cd stock_web
-./start_server.sh
-```
-
-**或者設定自動化，完全不用動手！**
-
-### 📅 週末
-
-- 檢視週報表現
-- 規劃下週操作
-- 學習技術分析
-
----
-
-## 🦈 需要幫助？
-
-直接問鯊魚寶寶：
-
-- "幫我更新股票網頁"
-- "今天選股報告如何？"
-- "我的投資組合現在損益多少？"
-- "設定自動更新股票網頁"
-
----
-
-## 🎉 恭喜！
-
-你已經擁有一個完整的台股分析網頁系統了！
-
-**投資愉快，穩健獲利！** 🚀
+瀏覽器測試：開啟 `html/test_runner.html`（需 HTTP 伺服器）

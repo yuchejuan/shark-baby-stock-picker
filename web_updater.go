@@ -178,7 +178,7 @@ func main() {
 	
 	// 儲存檔案
 	homeDir, _ := os.UserHomeDir()
-	outputPath := filepath.Join(homeDir, ".openclaw", "workspace", "stock_web", "portfolio.json")
+	outputPath := filepath.Join(homeDir, "html", "portfolio.json")
 	
 	jsonData, _ := json.MarshalIndent(portfolio, "", "  ")
 	if err := ioutil.WriteFile(outputPath, jsonData, 0644); err != nil {
@@ -186,6 +186,6 @@ func main() {
 		return
 	}
 	
-	fmt.Printf("✅ 資料已儲存至 stock_web/portfolio.json\n")
+	fmt.Printf("✅ 資料已儲存至 html/portfolio.json\n")
 	fmt.Printf("🌐 開啟 http://localhost:8081 即可查看網頁！\n")
 }

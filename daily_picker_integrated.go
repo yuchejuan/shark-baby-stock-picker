@@ -695,8 +695,8 @@ func main() {
 	}
 
 	// 儲存 JSON
-	outputFile := "stock_web/daily_report.json"
-	os.MkdirAll("stock_web", 0755)
+	outputFile := "html/daily_report.json"
+	os.MkdirAll("html", 0755)
 	jsonData, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
 		fmt.Printf("❌ JSON 產生失敗: %v\n", err)

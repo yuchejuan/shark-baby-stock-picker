@@ -531,7 +531,7 @@ func TestWebReport() {
 	
 	// 儲存報告
 	report, _ := GenerateWebReport([]WebStockPick{webPick}, nil)
-	filename := "/home/administrator/.openclaw/workspace/stock_web/daily_report.json"
+	filename := "/home/administrator/.openclaw/workspace/html/daily_report.json"
 	err = SaveWebReport(report, filename)
 	if err != nil {
 		fmt.Printf("\n❌ 儲存失敗: %v\n", err)
